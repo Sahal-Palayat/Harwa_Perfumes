@@ -1,0 +1,129 @@
+<%- include ('header')%>
+
+
+        <section class="content-main">
+            <form action="/addproduct" method="post" enctype="multipart/form-data" onsubmit="return validate()">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                        <div>
+                            <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                            <button  type="submit" class="btn btn-md rounded font-sm hover-up">Publish</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product title</label>
+                                <input name="name" type="text" placeholder="Type here" class="form-control" id="name">
+                                <p id="nameError"></p>
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_sku" class="form-label">Volume</label>
+                                    <input name="volume" type="text" placeholder="Type here" class="form-control" id="volume">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Fragrance</label>
+                                    <input type="text" name="fragrance" placeholder="Type here" class="form-control" id="product_color">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_size" class="form-label">Quantity</label>
+                                    <input type="text" name="quantity" placeholder="Type here" class="form-control" id="quantity">
+                                    <p id="quantityError"></p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Brand</label>
+                                <input type="text" name="brand" placeholder="Type here" class="form-control" id="product_brand">
+                            </div>
+                        </div>
+                   
+
+
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea name="description" placeholder="Type here" class="form-control" id="description" rows="4"></textarea>
+                                <p id="descriptionError"></p>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Cover Images</label>
+                                <input name="coverimage" class="form-control" type="file">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Images</label>
+                                <input name="images" class="form-control" type="file" multiple required>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                <input type="text" name="price" placeholder="Type here" id="price" class="form-control">
+                                <p id="priceError"></p>
+                            </div>
+                           
+                           
+                            
+                            <hr>
+                            <label class="form-label">Categories</label>
+                            <% for(let i=0;i<category.length;i++){  %>
+                                
+                                <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                    <input name="category" class="form-check-input" checked="" value="<%-category[i].name%>" name="mycategory" type="radio">
+                                    <span class="form-check-label"> <%-category[i].name%></span>
+                                </label>
+                                
+
+                            <%}%>
+                            
+                            
+                            
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+            </div>
+        </form>
+        </section>
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin/assets/js/vendors/select2.min.js"></script>
+    <script src="admin/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="admin/assets/js/main.js" type="text/javascript"></script>
+    <script src="/admin/assets/js/addproduct.js"></script>
+
+
+    <%- include ('footer')%>

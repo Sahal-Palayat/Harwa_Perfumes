@@ -1,0 +1,49 @@
+<%- include ('header')%>
+
+
+   
+
+
+        <section class="content-main mt-80 mb-80">
+            <div class="card mx-auto card-login">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Edit User</h4>
+                    <form action="/edituser" method="post" onsubmit="return validate()">
+                        <div class="mb-3">
+                            <input class="form-control" id="name" name="name" type="text" value="<%- user.name %>" placeholder="Edit name" >
+                            <p id="nameError"></p>
+                        </div> 
+                        <div class="mb-3">
+                            <input class="form-control"  id="email" name="email" type="text" value="<%- user.email %>" placeholder="Edit email" >
+                            <p id="emailError"></p>
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control" id="mobile" name="mobile" type="tel" value="<%- user.mobile %>" placeholder="Edit mobile">
+                            <p id="mobileError"></p>
+                        </div> 
+                        <!-- <input type="hidden" name="id" value="<%- user._id %>"> -->
+                        <div class="input-box button">
+                            <input type="submit" value="Update User">
+                            
+                        </div> 
+                        
+                        <button class="btn btn-info"><a href="/userslist">Go Back</a></button>
+                    </form>
+                    
+                </div>
+            </div>
+        </section>
+    </div>
+  
+</main>
+<script src="admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
+<!-- Main Script -->
+<script src="admin/assets/js/main.js" type="text/javascript"></script>
+   <script src="admin/assets/js/edituser.js"></script>   
+
+
+<%- include ('footer')%>
+
+                                                                                                                                                                                                                                                        

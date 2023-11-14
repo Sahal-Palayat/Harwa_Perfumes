@@ -1,0 +1,110 @@
+<%- include ('header')%>
+        <section class="content-main">
+            <form action="/editproduct" method="post" enctype="multipart/form-data" onsubmit="return validate()">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Product</h2>
+                        <div>
+                            <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                            <button  type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product title</label>
+                                <input name="name" type="text" value="<%-products.name%>" placeholder="Type here" class="form-control" id="product_title" required>
+                                <p id="nameError"></p>
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_sku" class="form-label">Volume</label>
+                                    <input name="volume" type="text" value="<%-products.volume%>" placeholder="Type here" class="form-control" id="product_sku" >
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Fragrance</label>
+                                    <input type="text" name="fragrance" value="<%-products.fragrance%>" placeholder="Type here" class="form-control" id="product_color">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_size" class="form-label">Quantity</label>
+                                    <input type="text" name="Quantity" value="<%-products.quantity%>" placeholder="Type here" class="form-control" id="quantity" required>
+                                    <p id="quantityError"></p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Brand</label>
+                                <input type="text" name="brand" value="<%-products.brand%>" placeholder="Type here" class="form-control" id="product_brand" >
+                            </div>
+                            <input type="hidden" name="id" value="<%- products._id %>">
+                        </div>
+                   
+
+
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea name="description"  placeholder="Type here" class="form-control" rows="4" id="description" required ></textarea>
+                                <p id="descriptionError"></p>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <!-- <div class="card-body">
+                            <div>
+                                <label class="form-label">Cover Images</label>
+                                <input name="coverimage" value="" class="form-control" type="file">
+                            </div>
+                        </div> -->
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Images</label>
+                                <input name="images" class="form-control" value="<%-products.images %>" type="file" multiple >
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                <input type="text" name="price" value="<%-products.price %>" id="price" placeholder="Type here" class="form-control" required>
+                                <p id="priceError"></p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Status</label>
+                                <select class="form-select">
+                                    <option>Listed</option>
+                                    <option>Unlisted</option>
+                                </select>
+                            </div>
+                           
+                            
+                            <hr>
+                           
+<!--                              -->
+                            
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+            </div>
+        </form>
+        </section>
+       
+    </main>
+    <script src="admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin/assets/js/vendors/select2.min.js"></script>
+    <script src="admin/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="admin/assets/js/main.js" type="text/javascript"></script>
+    <script src="/admin/assets/js/addproduct.js"></script>
+
+    <%- include ('footer')%>

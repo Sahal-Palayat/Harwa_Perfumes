@@ -1,0 +1,25 @@
+<%- include ('header')%>
+
+<div class="col-md-3">
+    <h5>Add Category</h5><br>
+    <form action="/editcategory" method="post">
+        <div class="mb-4">
+            <label for="product_name" class="form-label">Name</label>
+            <input value="<%-category.name%>" type="text" name="name" type="text" placeholder="Type here" class="form-control" id="id" />
+        </div>
+        
+        <div class="mb-4">
+            <label  class="form-label"><% %></label>
+            <input type="text" value="<%-category.description%>" name="description" placeholder="Type here" class="form-control">
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Update category</button>
+        </div>
+        <input type="hidden" name="id" value="<%- category._id %>">
+    </form>
+</div>
+
+
+</body>
+        
+</html>

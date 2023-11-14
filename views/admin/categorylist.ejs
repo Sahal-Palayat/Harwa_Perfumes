@@ -1,0 +1,115 @@
+<%- include('header')%>
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Categories </h2>
+                    <p>Add, block or unblock a category</p>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                    
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th>Sl.No</th>
+                                            <th>Category Name</th>
+                                            <th>Description</th>
+                                            <th>Status</th>
+                                            <!-- <th>Order</th> -->
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       <% if(categories.length>0){  %>
+                                            <% for (let i=0;i<categories.length; i++){ %>
+                                                
+                                        <tr>
+                                            <td><%-i+1 %></td>
+                                            <td><%-categories[i].name%></td>
+                                            <td><%-categories[i].description%></td>
+                                            <td>
+                                                <li>
+                                                  <%  if(categories[i].is_listed===true){  %>
+                                                    <a href="/admin/category/block?id=<%= categories[i]._id %>">
+                                                    <i class="ri-eye-line"></i>
+                                                    <span style="color: rgb(39, 125, 95);">Listed</span>  </a> 
+                                                   <% }else{ %>
+                                                    <a href="/admin/category/unblock?id=<%=categories[i]._id %>">
+                                                    <i class="ri-eye-line"></i>
+                                                    <span style="color: rgb(172, 14, 14);">Unlisted</span></a>
+                                                </li>
+                                                <% }%>
+
+                                            </td>
+                                            <td>
+                                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                                                    <a href="/editcategory?id=<%- categories[i]._id%>" class="btn btn-sm font-sm rounded btn-brand">
+                                                        Edit
+                                                    </a>
+                                                    
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>        
+
+
+                                           <% }%>
+                                           <% } else { %>
+                                            <tr>
+                                                <td colspan="5"><h1 class="not-found">Categories not found</h1></td>
+                                            </tr>
+                                            <% }%>
+                                       
+                                       
+                                        
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h5>Add Category</h5><br>
+                            <form action="/category" method="post">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="text" name="name" type="text" placeholder="Type here" class="form-control" id="product_name" />
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label  class="form-label">Description</label>
+                                    <input type="text" name="description" placeholder="Type here" class="form-control">
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Create category</button>
+                                </div>
+                            </form>
+                        </div>
+                         <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+     
+    </main>
+    <script src="admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin/assets/js/vendors/select2.min.js"></script>
+    <script src="admin/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="admin/assets/js/main.js" type="text/javascript"></script>
+
+   
+</body>
+        
+</html>
