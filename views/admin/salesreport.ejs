@@ -1,0 +1,189 @@
+<%- include('header') %>
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Sales List </h2>
+                    <br><br>
+                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="filterOrders">
+                        <option value="all">Report</option>
+                        <option value="today">Report of Today</option>
+                        <option value="week">Report of this week</option>
+                        <option value="month">Report of this month</option>
+                        <option value="year">Report of this year</option>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card mb-4">
+                      
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Customer name</th>
+                                            <th>Price</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th class="text-end"> Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+
+
+
+     <!------------------------------------------ this is a single order data -=--------------------->
+     <% if (orders.length> 0) { %>
+        <% for (let i=0; i < orders.length;i++) { %>
+            <% for (let j = 0; j < orders[i].products.length; j++) { %>
+                
+            <tr>
+                <td>ODR<%= orders[i]._id.toString().slice(-4) %></td>
+                <td><b><%= orders[i].user.name  %></b></td>
+               
+                <td>$<%= orders[i].grandTotal %></td>
+
+                <% if (orders[i].status=='Pending') { %>
+
+                <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                <% } else if(orders[i].status=='Confirmed'){ %>
+                    <td><span class="badge rounded-pill alert-success">Confirmed</span></td>
+                    <% } else if(orders[i].status=='Cancelled'){ %>
+                        <td><span class="badge rounded-pill alert-danger">Cancelled</span></td>
+                <% } else if(orders[i].status=='Shipped'){ %>
+                    <td><span class="badge rounded-pill alert-success">Shipped</span></td>
+                    <% } else if(orders[i].status=='Delivered'){ %>
+                        <td><span class="badge rounded-pill alert-success">Delivered</span></td>
+                        <% } else if(orders[i].status=='Returned'){ %>
+                            <td><span class="badge rounded-pill alert-danger">Returned</span></td>
+
+                        <% } %>
+
+                        <td><%= orders[i].createdAt.toLocaleDateString() %></td>
+                <td class="text-end">
+                    <a href="/orderDetails?id=<%- orders[i]._id%>" class="btn btn-md rounded font-sm">Detail</a>
+                    <!-- <a href="/admin/oderDetailsadmin?id=<%= orders[i].products[j]._id %>&orderId=<%= orders[i]._id %>" class="btn btn-md rounded font-sm">Detail</a> -->
+
+
+                   
+                   
+                    
+                
+                </td>
+            </tr>
+
+            <% } %> 
+            <% } %>
+            <% } else { %>
+                <tr>
+                  <td colspan="2">No item found in Oders</td>
+                </tr>
+                <% } %>
+       
+       
+        
+       
+      
+              <!-- --------------------------end ------------------------------------ -->
+                                        
+                                        
+                                      
+                                    </tbody>
+                                </table>
+                            </div> <!-- table-responsive //end -->
+                        </div> <!-- card-body end// -->
+                    </div> <!-- card end// -->
+                    <% if (totalpages) { %>
+                        <div class="pagination justify-content-center">
+                          <% if (currentpage > 1) { %>
+                            <button class="btn btn-sm" ><a href="?page=<%= currentpage - 1 %>">Previous</a></button>
+                          <% } %>
+                      
+                          <% for (let i = 1; i <= totalpages; i++) { %> <!-- Change the loop to start from 1 and go up to totalpages -->
+                            <button class="btn btn-sm " ><a href="?page=<%= i %>" class="<%= i === currentpage ? 'active' : '' %>"><%= i %></a></button>
+                          <% } %>
+                      
+                          <% if (currentpage < totalpages) { %>
+                            <button class="btn btn-sm" ><a href="?page=<%= currentpage + 1 %>">Next</a></button>
+                          <% } %>
+                        </div>
+                      <% } %>
+                </div>
+                <div class="col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-3">Filter by</h5>
+                            <form>
+                                <div class="mb-4">
+                                    <label for="order_id" class="form-label">Order ID</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="order_id">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="order_customer" class="form-label">Customer</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="order_customer">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Order Status</label>
+                                    <select class="form-select">
+                                        <option>Published</option>
+                                        <option>Draft</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="order_total" class="form-label">Total</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="order_total">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="order_created_date" class="form-label">Date Added</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="order_created_date">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="order_modified_date" class="form-label">Date Modified</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="order_modified_date">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="order_customer_1" class="form-label">Customer</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="order_customer_1">
+                                </div>
+                            </form>
+                            
+                        </div>
+                        
+                    </div> <!-- card end// -->
+                    
+                </div>
+              
+            </div>
+           
+        </section> <!-- content-main end// -->
+        <script>
+
+document.getElementById('filterOrders').addEventListener('change', function () {
+    const selectedValue = this.value;
+    switch (selectedValue) {
+        case 'today':
+            window.location.href = '/salesReport?date=today';
+            break;
+        case 'week':
+            window.location.href = '/salesReport?date=week';
+            break;
+        case 'month':
+            window.location.href = '/salesReport?date=month';
+            break;
+        case 'year':
+            window.location.href = '/salesReport?date=year';
+            break;
+        default:
+            window.location.href = '/salesReport?date=all';
+    }
+});
+
+
+        </script>
+        <%- include('footer') %>

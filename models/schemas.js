@@ -53,6 +53,16 @@ const userModel=new mongoose.Schema({
     is_blocked:{
         type:Boolean,
         default:false
+    },
+    token:{
+        type:String
+    },
+    tokenExpiry:{
+        type:String
+    },
+    wallet:{
+        type:Number,
+        default:0
     }
    
 })
@@ -125,6 +135,10 @@ const productModel=new mongoose.Schema({
     },
     description:{
         type:String
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now
     }
 })
 
@@ -224,11 +238,13 @@ const orderModel=new mongoose.Schema({
             type:Boolean,
             default:false,
           },
-          reason:String,
-          response:Boolean, 
-     
-  
-
+          payment_id:{
+            type:String
+          },
+          order_Id:{
+            type:String
+          }
+          
 })
 
 
@@ -250,5 +266,6 @@ module.exports={
     Category,
     Address,
     Cart,
-    Order
+    Order,
+   
 }

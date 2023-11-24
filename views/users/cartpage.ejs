@@ -187,6 +187,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+
+                                    
                                     <% cart.items.forEach(products => {    %>
                                         <tr>
                                             <td>
@@ -479,7 +481,7 @@ console.log('product selected');
 
 
 function selectStatus(id){
-    alert(id)
+
     $.ajax({
             url:`/selectProduct`,
             method:'post',

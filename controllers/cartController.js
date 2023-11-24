@@ -19,7 +19,8 @@ const LoadCart = async (req, res) => {
         res.render("users/cartpage", { cart:cart,user:user });
        } catch (error) {
          console.error(error);
-      
+         res.render('users/page-404')
+
        }
     };
   
@@ -69,6 +70,8 @@ const addToCart = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 
@@ -95,7 +98,8 @@ const deleteItemCart = async (req, res) => {
         }
     } catch (error) {
         console.log(error, 'error while deleting cart item');
-        res.status(500).json({ status: false, message: "Internal Server Error" });
+        res.render('users/page-404')
+
     }
 };
 
@@ -114,6 +118,8 @@ const dltAllItem = async (req, res) => {
 
     } catch (error) {
         console.log(error, 'error occur while Dlt all elements in the cart');
+        res.render('users/page-404')
+
     }
 }
 
@@ -154,7 +160,9 @@ const dltAllItem = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal server error' });
+        res.render('users/page-404')
+
+
     }
   };
 
@@ -179,6 +187,8 @@ const dltAllItem = async (req, res) => {
         console.log();
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
   }
 

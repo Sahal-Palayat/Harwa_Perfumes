@@ -2,7 +2,7 @@
 
 
         <section class="content-main">
-            <form action="/addproduct" method="post" enctype="multipart/form-data" onsubmit="return validate()">
+            <form action="/addproduct" method="post" id="addProductForm" enctype="multipart/form-data" onsubmit="return validate()">
             <div class="row">
                 <div class="col-9">
                     <div class="content-header">
@@ -56,18 +56,82 @@
                         </div>
                     </div> <!-- card end// -->
                     <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Cover Images</label>
-                                <input name="coverimage" class="form-control" type="file">
-                            </div>
+                        <!-- <div class="card-body">
+                            <label for="coverImage">Cover Image</label>
+                                <input id="coverImage" accept="image/*" name="coverimage" class="form-control" type="file">
+                                <canvas id="coverImageCanvas" style="width: 10rem;"></canvas>
+                                                        
                         </div>
                         <div class="card-body">
                             <div>
                                 <label class="form-label">Images</label>
                                 <input name="images" class="form-control" type="file" multiple required>
                             </div>
-                        </div>
+                        </div> -->
+
+
+
+                        <center>
+                            <p style="color: red; margin-top: 10px;" id="err14"></p>
+                            <input type="file" name="coverimage" id="poster" accept="image/*" required>
+                            <button type="button" class="btn btn-md rounded font-sm hover-up"
+                                onclick="loadImage('poster')">Crop</button>
+                            <img src="" id="showposter" style="width: auto; height: 250px; margin-top: 20px ; display: block;"
+                                alt="">
+        
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                                id="saveposter" onclick="uploadCroppedImage('poster')">Save</button>
+        
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelposter">Cancel</button>
+        
+        
+                            <label for="Images" style="float: left; margin-left: 1rem;">Images</label>
+        
+                            <p style="color: red; margin-top: 10px;" id="err15">.</p>
+                            <input type="file" name="images" style=" margin-top: 20px;" id="Img1" accept="image/*" required>
+                            <button type="button" class="btn btn-md rounded font-sm hover-up"
+                                onclick="loadImage('Img1')">Crop</button>
+        
+                            <img src="" id="showImg1" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+        
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                                id="saveImg1" onclick="uploadCroppedImage('Img1')">Save</button>
+        
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelImg1">Cancel</button>
+        
+                            <p style="color: red; margin-top: 10px;" id="err16"></p>
+                            <input type="file" name="images" style=" margin-top: 20px;" id="Img2" accept="image/*" required>
+                            <button type="button" class="btn btn-md rounded font-sm hover-up"
+                                onclick="loadImage('Img2')">Crop</button>
+        
+                            <img src="" id="showImg2" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+        
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                                id="saveImg2" onclick="uploadCroppedImage('Img2')">Save</button>
+        
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelImg2">Cancel</button>
+        
+                            <p style="color: red; margin-top: 10px;" id="err17"></p>
+                            <input type="file" name="images" id="Img3" style=" margin-top: 20px;" accept="image/*" required>
+                            <button type="button" class="btn btn-md rounded font-sm hover-up"
+                                onclick="loadImage('Img3')">Crop</button>
+        
+                            <img src="" id="showImg3" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+        
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                                id="saveImg1" onclick="uploadCroppedImage('Img3')">Save</button>
+        
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelImg3">Cancel</button>
+        
+    
+                        </center>
+
+                  
+
                     </div> <!-- card end// -->
                 </div>
                 <div class="col-lg-3">
@@ -124,6 +188,94 @@
     <!-- Main Script -->
     <script src="admin/assets/js/main.js" type="text/javascript"></script>
     <script src="/admin/assets/js/addproduct.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <script>
+      let cropper;
+
+    const updateProductForm = document.getElementById('updateProductForm');
+    updateProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        let result = await Swal.fire({
+            title: 'Do you want to save the changes?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+            denyButtonText: `Don't save`,
+        });
+        if (result.isConfirmed) {
+            await Swal.fire('Saved!', '', 'success');
+            updateProductForm.submit();
+        } else if (result.isDenied) {
+            await Swal.fire('Changes are not saved', '', 'info');
+        }
+    });
+
+
+
+
+function loadImage(id) {
+    alert('vannu')
+    const input = document.getElementById(id);
+    alert(input+'llll')
+    const canvas = document.getElementById(`show${id}`);
+    
+    const file = input.files[0];
+    console.log(file)
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            canvas.src = e.target.result;
+            document.getElementById(`save${id}`).style.display = 'block'
+            document.getElementById(`cancel${id}`).style.display = 'block'
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(canvas, {
+                viewMode: 2,
+            });
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        canvas.src = '';
+        if (cropper) {
+            cropper.destroy();
+        }
+    }
+}
+
+function uploadCroppedImage(id) {
+    const canvas = cropper.getCroppedCanvas();
+   
+    if (canvas) {
+        canvas.toBlob((blob) => {
+            const fileName = 'cropped_image.jpg';
+            const file = new File([blob], fileName, { type: 'image/jpeg' });
+            const input = document.getElementById(id);
+
+            if (DataTransfer && FileList) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+            } else {
+                console.error('FileList and DataTransfer are not supported in this browser.');
+            }
+
+            const showImg = document.getElementById(`show${id}`);
+            showImg.src = URL.createObjectURL(blob);
+
+            cropper.destroy();
+            document.getElementById(`save${id}`).style.display = 'none';
+            document.getElementById(`cancel${id}`).style.display = 'none';
+        });
+    }
+}
+
+    </script>
 
 
     <%- include ('footer')%>

@@ -71,51 +71,23 @@
 
                                    <% }%>
                                 <%}%>
-
+                               
                             </tbody>
                         </table>
-
-                      
-                        <!-- <div class="row align-items-center">
-                            <div class="col col-check flex-grow-0">
-                                <div class="form-check">
-                                    <p>1</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                <a class="itemside" href="#">
-                                    <div class="left">
-                                        <img src="admin/assets/imgs/items/1.jpg" class="img-sm img-thumbnail" alt="Item">
-                                    </div>
-                                    <div class="info">
-                                        <h6 class="mb-0">T-shirt for men medium size</h6>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>$34.50</span> </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                <span class="badge rounded-pill alert-success">Active</span>
-                            </div>
-                            <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                <span>02.11.2022</span>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                <a href="#" class="btn btn-sm font-sm rounded btn-brand">
-                                    <i class="material-icons md-edit"></i> Edit
-                                </a>
-                                <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                                    <i class="material-icons md-delete_forever"></i> Delete
-                                </a>
-                            </div>
-                        </div>  -->
-                    <!-- </article>  -->
-                    
-                   
-                   
-                    
-                <!-- </div>  -->
+               
+            </div>
+            <div class="pagination" style="margin-left: 30px;margin-bottom: 20px;">
+                <% if (currentPage > 1) { %>
+                  <a href="?page=<%= currentPage - 1 %>"  >Previous</a>
+                <% } %>
+                
+                Page <%= currentPage %> of <%= totalPages %>
+                
+                <% if (currentPage < totalPages) { %>
+                  <a href="?page=<%= currentPage + 1 %>">Next</a>
+                <% } %>
             </div> 
-            <div class="pagination-area mt-30 mb-50">
+            <!-- <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
                         <li class="page-item active"><a class="page-link" href="#">01</a></li>
@@ -126,7 +98,7 @@
                         <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
                     </ul>
                 </nav>
-            </div>
+            </div> -->
         </section> <!-- content-main end// -->
         
     </main>
@@ -137,6 +109,16 @@
     <script src="admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="admin/assets/js/main.js" type="text/javascript"></script>
+    <script>
 
+       
+        function searchProducts() {
+          
+          const currentPage = document.getElementById('currentPage').value; // Use the currentPage variable from your controller
+      
+          // Redirect to the same route with the search query and current page
+          window.location.href = `/admin/products?page=${currentPage}`
+        }
+      </script>
 
     <%- include ('footer') %>

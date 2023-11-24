@@ -176,7 +176,16 @@
                                                 <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                             </div>
                                             <div class="product-extra-link2">
-                                                <button type="submit" class="button button-add-to-cart">Add to cart</button>
+
+
+                                                <% if (products.quantity > 0) { %>
+                                                    <button type="submit" onclick="addToCart('<%= products.id %>',event)"  class="button button-add-to-cart">Add to cart</button>
+                                                    <% } else { %>
+                                                        <button type="button" disabled class="btn btn-outline-danger button-add-to-cart" >Out Of Stock</button>
+                                                <% } %>
+
+
+                                                
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -184,6 +193,7 @@
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">Volume: <a href="#"><%=products.volume%></a></li>
                                             <li class="mb-5">Fragrance: <a href="#" rel="tag"><%=products.fragrance%></a></li>
+                                            <li class="mb-5">Quantity: <a href="#" rel="tag"><%=products.quantity%></a></li>
                                             
                                         </ul>
                                     </div>
@@ -255,7 +265,35 @@
     <!-- Template  JS -->
     <script src="./user/assets/js/main.js?v=3.4"></script>
     <script src="./user/assets/js/shop.js?v=3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+          
+       function addToCart(id) {
+    $.ajax({
+        url: `/addToCart?id=${id}`,
+        method: "get",
+        success: (response) => {
+            if (response.status) {
+                
+                Swal.fire({
+                    title: 'ADD TO CART',
+                    text: 'Product Added to cart',
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                });
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: (error) => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+}
 
+    </script>
     
 
 <%- include('footer') %>

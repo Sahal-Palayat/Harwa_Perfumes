@@ -24,23 +24,23 @@ function validate() {
        return false;
     }
     
-    if (isNaN(quantity.value.trim()) || quantity.value.trim() === '') {
-        if(isNaN(quantity.value.trim())){
-            quantityError.innerHTML = 'Must a Number'
-            quantityError.style.color = 'red'
-            setTimeout(() => {
-                quantityError.innerHTML = ''
-              }, 5000)
-        }else if(quantity.value.trim() === ''){
-            quantityError.innerHTML = 'Field is required'
-            quantityError.style.color = 'red'
-            setTimeout(() => {
-                quantityError.innerHTML = ''
-              }, 5000)
-        }
-        
-        return false;
+    if (isNaN(quantity.value.trim()) || quantity.value.trim() === '' || parseInt(quantity.value.trim()) < 0) {
+      if (isNaN(quantity.value.trim())) {
+          quantityError.innerHTML = 'Must be a Number';
+      } else if (quantity.value.trim() === '') {
+          quantityError.innerHTML = 'Field is required';
+      } else {
+          quantityError.innerHTML = 'Quantity must be a non-negative number';
       }
+  
+      quantityError.style.color = 'red';
+      setTimeout(() => {
+          quantityError.innerHTML = '';
+      }, 5000);
+  
+      return false;
+  }
+  
  
      if (description.value.trim() === '') {
         descriptionError.innerHTML = 'Field is required'
@@ -51,23 +51,23 @@ function validate() {
         return false;
      }
    
-     if (isNaN(price.value.trim()) || price.value.trim() === '') {
-        if(isNaN(price.value.trim())){
-            priceError.innerHTML = 'Must a Number'
-            priceError.style.color = 'red'
-            setTimeout(() => {
-                priceError.innerHTML = ''
-              }, 5000)
-        }else if(price.value.trim() === ''){
-            priceError.innerHTML = 'Field is required'
-            priceError.style.color = 'red'
-            setTimeout(() => {
-                priceError.innerHTML = ''
-              }, 5000)
-        }
-        
-        return false;
+     if (isNaN(price.value.trim()) || price.value.trim() === '' || parseFloat(price.value.trim()) < 0) {
+      if (isNaN(price.value.trim())) {
+          priceError.innerHTML = 'Must be a Number';
+      } else if (price.value.trim() === '') {
+          priceError.innerHTML = 'Field is required';
+      } else {
+          priceError.innerHTML = 'Price must be a non-negative number';
       }
+  
+      priceError.style.color = 'red';
+      setTimeout(() => {
+          priceError.innerHTML = '';
+      }, 5000);
+  
+      return false;
+  }
+  
       
    
  }

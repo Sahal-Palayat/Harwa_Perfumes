@@ -17,27 +17,27 @@
                         <div class="card-body">
                             <div class="mb-4">
                                 <label for="product_title" class="form-label">Product title</label>
-                                <input name="name" type="text" value="<%-products.name%>" placeholder="Type here" class="form-control" id="product_title" required>
+                                <input name="name" type="text" value="<%-products.name%>" placeholder="Type here" class="form-control" id="name" >
                                 <p id="nameError"></p>
                             </div>
                             <div class="row gx-3">
                                 <div class="col-md-4  mb-3">
                                     <label for="product_sku" class="form-label">Volume</label>
-                                    <input name="volume" type="text" value="<%-products.volume%>" placeholder="Type here" class="form-control" id="product_sku" >
+                                    <input name="volume" type="text" value="<%-products.volume%>" placeholder="Type here" class="form-control" id="volume" >
                                 </div>
                                 <div class="col-md-4  mb-3">
                                     <label for="product_color" class="form-label">Fragrance</label>
-                                    <input type="text" name="fragrance" value="<%-products.fragrance%>" placeholder="Type here" class="form-control" id="product_color">
+                                    <input type="text" name="fragrance" value="<%-products.fragrance%>" placeholder="Type here" class="form-control" id="fragrance">
                                 </div>
                                 <div class="col-md-4  mb-3">
                                     <label for="product_size" class="form-label">Quantity</label>
-                                    <input type="text" name="Quantity" value="<%-products.quantity%>" placeholder="Type here" class="form-control" id="quantity" required>
+                                    <input type="text" name="Quantity" value="<%-products.quantity%>" placeholder="Type here" class="form-control" id="quantity" >
                                     <p id="quantityError"></p>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <label for="product_brand" class="form-label">Brand</label>
-                                <input type="text" name="brand" value="<%-products.brand%>" placeholder="Type here" class="form-control" id="product_brand" >
+                                <input type="text" name="brand" value="<%-products.brand%>" placeholder="Type here" class="form-control" id="brand" >
                             </div>
                             <input type="hidden" name="id" value="<%- products._id %>">
                         </div>
@@ -49,7 +49,7 @@
                         <div class="card-body">
                             <div>
                                 <label class="form-label">Description</label>
-                                <textarea name="description"  placeholder="Type here" class="form-control" rows="4" id="description" required ></textarea>
+                                <textarea name="description"  placeholder="Type here" class="form-control" rows="4" id="description"  ></textarea>
                                 <p id="descriptionError"></p>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                         <div class="card-body">
                             <div class="mb-4">
                                 <label class="form-label">Price</label>
-                                <input type="text" name="price" value="<%-products.price %>" id="price" placeholder="Type here" class="form-control" required>
+                                <input type="text" name="price" value="<%-products.price %>" id="price" placeholder="Type here" class="form-control" >
                                 <p id="priceError"></p>
                             </div>
                             <div class="mb-4">

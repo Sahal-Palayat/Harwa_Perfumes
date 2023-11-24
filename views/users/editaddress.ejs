@@ -391,36 +391,42 @@
                                         </div>
                                         <div class="card-body">
                                             <p>Edit Address <a href="">Log in instead!</a></p>
-                                            <form method="post" action="/editAddress">
+                                            <form method="post" action="/editAddress" onsubmit="return validate()">
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
                                                         <label> Name<span class="required">*</span></label>
-                                                        <input required=""value="<%- address.name %>"  class="form-control square" name="name" type="text">
+                                                        <input required=""value="<%- address.name %>" id='name'  class="form-control square" name="name" type="text">
+                                                        <p id="nameError"></p>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label>Mobile <span class="required">*</span></label>
-                                                        <input required="" value="<%- address.mobile %>" class="form-control square" name="mobile">
+                                                        <input required="" value="<%- address.mobile %>" id="mobile" class="form-control square" name="mobile">
+                                                        <p id="mobileError"></p>
                                                     </div>
                                                     <div class="form-group col-md-12">
                                                         <label>State <span class="required">*</span></label>
-                                                        <input required="" value="<%-address.state %>" class="form-control square" name="state" type="text">
+                                                        <input required="" value="<%-address.state %>" id="state" class="form-control square" name="state" type="text">
+                                                        <p id="stateError"></p>
                                                     </div>
                                                   
                                                     <div class="form-group col-md-12">
                                                         <label>Pin Code<span class="required">*</span></label>
-                                                        <input required="" value="<%- address._pincode %>" class="form-control square" name="pincode" type="text">
+                                                        <input required="" value="<%- address.pincode %>" id="pincode" class="form-control square" name="pincode" type="text">
+                                                        <p id="pincodeError"></p>
                                                     </div>
                                                     <div class="form-group col-md-12">
                                                         <label>Area/ Street<span class="required">*</span></label>
-                                                        <input required="" value="<%-address.areastreet %>" class="form-control square" name="areastreet" type="text">
+                                                        <input required="" value="<%-address.areastreet %>" id="areastreet" class="form-control square" name="areastreet" type="text">
+                                                        <p id="areastreetError"></p>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label> Landmark<span class="required">*</span></label>
-                                                        <input required="" value="<%- address.landmark %>" class="form-control square" name="landmark" type="text">
+                                                        <input required="" value="<%- address.landmark %>" id="landmark" class="form-control square" name="landmark" type="text">
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label>City <span class="required">*</span></label>
-                                                        <input required="" value="<%- address._city%>" class="form-control square" name="city">
+                                                        <input required="" value="<%- address.city%>" id="city" class="form-control square" name="city">
+                                                        <p id="cityError"></p>
                                                     </div>
                                                     <input type="hidden" name="id" value="<%= address._id %>">
                                                     <div class="col-md-12">
@@ -591,6 +597,8 @@
     <script src="user/assets/js/plugins/jquery.theia.sticky.js"></script>
     <!-- Template  JS -->
     <script src="./user/assets/js/main.js?v=3.4"></script>
+    <script src="/user/assets/js/addAddress.js"></script>
+
 </body>
 
 </html>

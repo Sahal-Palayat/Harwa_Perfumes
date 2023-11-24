@@ -44,7 +44,7 @@ userRouter.post('/editAddress',auth.isLogin,userController.editAddress)
 userRouter.get('/deleteAddress',auth.isLogin,userController.deleteAddress)
 userRouter.get('/editprofile',auth.isLogin,userController.loadEditProfile)
 userRouter.post('/editprofile',auth.isLogin,userController.editProfile)
-
+ 
 userRouter.get('/cartPage',auth.isLogin,cartController.LoadCart)
 userRouter.get('/addToCart',auth.isLogin,cartController.addToCart)
 userRouter.post('/updateCart',auth.isLogin,cartController.incCartItem)
@@ -56,7 +56,11 @@ userRouter.post('/selectProduct',auth.isLogin,cartController.selectProduct)
 
 userRouter.post('/placeOrder',auth.isLogin,orderController.placeOrder)
 userRouter.get('/orderView',auth.isLogin,orderController.loadOrderView)
-
-
-
+userRouter.post('/cancelStatus',auth.isLogin,orderController.cancelStatus)
+userRouter.get ('/resetPassword',userController.resetPassword)
+userRouter.post ('/resetPassword',userController.getpassword)
+userRouter.get('/forgotPass',auth.isLogin,userController.forgotpass)
+userRouter.post('/updatePayment',auth.isLogin,orderController.updatePayment)
+userRouter.post('/addWallet',auth.isLogin,orderController.addWallet)
+userRouter.post('/updateWallet',auth.isLogin,orderController.updateWallet)
 module.exports=userRouter;   

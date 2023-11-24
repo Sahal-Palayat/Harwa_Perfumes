@@ -345,7 +345,9 @@
 
 
                         <a style="margin-left: 25rem;" href="/addAddress" class="btn btn-primary btn-sm rounded">Create new</a>
-              <form action="/placeOrder" method="post">
+
+
+              <!-- <form> -->
                       <%  if(user.address.length>0){   %>
                           <%  for(let i=0;i<user.address.length;i++){  %>
                     
@@ -356,13 +358,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xl-3 col-sm-6">
-                                        <input class="form-check-input" type="radio" required="" style="width: 1rem; height: 1rem;" value="<%= user.address[i]._id  %>" name="addressId" id="checkoutShippingMethod">
+                                        <input class="form-check-input" type="radio" required="" onclick="selectAddress('<%= user.address[i]._id %>')" style="width: 1rem; height: 1rem;" value="<%= user.address[i]._id  %>" name="addressId" id="checkoutShippingMethod">
                                         
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="dropdown float-end">
                                                     <a class="text-muted dropdown-toggle font-size-16" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true"><i class="bx bx-dots-horizontal-rounded"></i></a>
-                                                    <div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Remove</a></div>
+                                                    <div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="">Edit</a><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Remove</a></div>
                                                 </div>
                                                 <div class="d-flex align-items-center">
                                                     <div><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-md rounded-circle img-thumbnail" /></div>
@@ -381,7 +383,7 @@
                                                 </div>
                                                 <div class="d-flex gap-2 pt-4">
                                                     <button type="button" class="btn btn-soft-primary btn-sm w-50"><i class="bx bx-user me-1"></i> Profile</button>
-                                                    <button type="button" class="btn btn-primary btn-sm w-50"><i class="bx bx-message-square-dots me-1"></i> Contact</button>
+                                                    <button type="button" class="btn btn-primary btn-sm w-50"><i class="bx bx-message-square-dots me-1"></i> Edit</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -413,7 +415,8 @@
                                         <thead>
                                             <tr>
                                                 <th colspan="2">Product</th>
-                                                <th>Total</th>
+                                                <th>Price</th>
+                                                <th>Quantity</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -424,6 +427,7 @@
                                                 <td>
                                                     <h5><a href="shop-product-full.html"><%=carts.product.name %></a></h5> <span class="product-qty"></span>
                                                 </td>
+                                                <td><%= carts.product.price%></td>
                                                 <td><%= carts.quantity  %></td>
                                             </tr>
                                             
@@ -444,7 +448,7 @@
                                                     <!-- Display the total -->
                                                     <%= total %>
                                                     
-                                                    <input type="hidden" name="grandTotal" value="<%= total %>">
+                                                    <input type="hidden" id="grandTotal" name="grandTotal" value="<%= total %>">
                                                 </span></td>
                                             </tr>
                                         </tbody>
@@ -456,36 +460,47 @@
 
 
                    
-                    
-                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                <a style="margin-left: 25rem;" onclick="addWallet()" class="btn btn-primary btn-sm rounded">Add Wallet</a>
+
+                            <div class="bt-1 border-color-1 mt-30 mb-30">
                             <div class="payment_method">
                                 <div class="mb-25">
                                     <h4>Payment</h4>
                                 </div>
                                 <div class="payment_option">
                                     <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" value="COD" name="paymentMethod" id="exampleRadios3" >
-                                        <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Cash On Delivery (COD)</label>
+                                        <input class="form-check-input" required="" type="radio" value="COD" name="paymentMethod" onclick="selectPaymentMethod('COD')" id="exampleRadios3" >
+                                        <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer"  aria-controls="bankTranfer">Cash On Delivery (COD)</label>
                                         <div class="form-group collapse in" id="bankTranfer">
                                             <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
                                         </div>
                                     </div>
                                     
-                                    </div>
+                                    
                                     <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="paymentMethod" id="exampleRadios5" >
-                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Paypal</label>
+                                            <input class="form-check-input" required="" type="radio" value="Razorpay" name="paymentMethod" name="paymentMethod" onclick="selectPaymentMethod('Razorpay')" id="exampleRadios5" >
+                                            <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Razorpay</label>
                                         <div class="form-group collapse in" id="paypal">
                                             <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
                                         </div>
                                     </div>
-                                </div>
+
+                                    
+                                    <div class="custome-radio">
+                                        <input class="form-check-input" required="" type="radio" value="Wallet" name="paymentMethod" name="paymentMethod" onclick="selectPaymentMethod('Wallet')" id="exampleRadios1" >
+                                        <label class="form-check-label" for="exampleRadios1" data-bs-toggle="collapse" data-target="#wallet" aria-controls="wallet">Wallet</label>
+                                        <div class="form-group collapse in" id="Wallet">
+                                            <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
+                                        </div>
+                                   </div>
+                               </div>
+                             </div>
                             </div>
                             <!-- <a href="" type="submit" class="btn btn-fill-out btn-block mt-30">Place Order</a> -->
-                            <button type="submit" class="btn btn-fill-out btn-block mt-30" name="submit" value="Submit">Place Order</button>
+                            <button type="submit" onclick="confirmorder()" id="paymentButton" class="btn btn-fill-out btn-block mt-30"  name="submit" value="Submit">Place Order</button>
                         </div>
                     </div>
-                </form>
+                <!-- </form> -->
                 </div>
             </div>
         </section>
@@ -639,6 +654,10 @@
     <script src="./user/assets/js/main.js?v=3.4"></script>
     <script src="./user/assets/js/shop.js?v=3.4"></script>
     <script src="./user/assets/js/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="user/assets/js/razorpay.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+   
 </body>
 
 </html>

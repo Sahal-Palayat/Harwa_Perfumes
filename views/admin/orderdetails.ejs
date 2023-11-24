@@ -23,21 +23,32 @@
                                     <option value="Confirmed">Confirmed</option>
                                     <option value="Pending" selected>Pending</option>
                                     <option value="Cancelled">Cancelled</option>
+                                    <option value="Delivered" selected>Delivered</option>
                                 <% } else if (order.status === 'Confirmed') { %>
                                     <option value="Shipped">Shipped</option>
                                     <option value="Confirmed" selected>Confirmed</option>
                                     <option value="Cancelled">Cancelled</option>
+                                    <option value="Delivered" selected>Delivered</option>
+                                <% } else if (order.status === 'Delivered') { %>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Confirmed" >Confirmed</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Delivered" selected>Delivered</option>
                                 <% } else if (order.status === 'Shipped') { %>
                                     <option value="Out For Delivery">Out For Delivery</option>
                                     <option value="Shipped" selected>Shipped</option>
+                                    <option value="Delivered" selected>Delivered</option>
+
                                 <% } else{ %>
                                     <option value="Out For Delivery">Out For Delivery</option>
                                     <option value="Cancelled" selected>Cancelled</option>
+                                    <option value="Delivered" >Delivered</option>
+
                                     <% } %>
                             </select>
-                          
+                     
 
-                            <a class="btn btn-primary" onClick="changeStatus('<%= order.id %>')" type="submit" >Save</a>
+                            <a class="btn btn-primary" onclick="changeStatus('<%= order.id %>',event)" type="submit" >Save</a>
                             <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
                         </div>
                     </div>
@@ -144,12 +155,12 @@
                                                         <dt>Grand total:</dt>
                                                         <dd> <b class="h5"><%= totalPrice +40 %></b>.00 </dd>
                                                     </dl>
-                                                    <dl class="dlist">
+                                                    <!-- <dl class="dlist">
                                                         <dt class="text-muted">Status:</dt>
                                                         <dd>
                                                             <span class="badge rounded-pill alert-success text-success">Payment done</span>
                                                         </dd>
-                                                    </dl>
+                                                    </dl> -->
                                                 </article>
                                             </td>
                                         </tr>
@@ -160,7 +171,7 @@
                         </div> <!-- col// -->
                         <div class="col-lg-1"></div>
                         <div class="col-lg-4">
-                            <div class="box shadow-sm bg-light">
+                            <!-- <div class="box shadow-sm bg-light">
                                 <h6 class="mb-15">Payment info</h6>
                                 <p>
                                     <img src="admin/assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
@@ -174,7 +185,7 @@
                                     <textarea class="form-control" name="notes" id="notes" placeholder="Type some note"></textarea>
                                 </div>
                                 <button class="btn btn-primary">Save note</button>
-                            </div>
+                            </div> -->
                         </div> <!-- col// -->
                     </div>
                 </div> <!-- card-body end// -->
@@ -190,14 +201,15 @@
     <!-- Main Script -->
     <script src="admin/assets/js/main.js" type="text/javascript"></script>
     <script src="admin/assets/js/order.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
 
 function changeStatus(orderId) {
 
     var selectedStatus = document.getElementById('statusChange').value;
-    alert(orderId)
-    alert(selectedStatus)
+    
+    
 
         fetch('/updateStatus', {
             method: 'post',
@@ -207,7 +219,13 @@ function changeStatus(orderId) {
             body: JSON.stringify({ orderId: orderId, status:selectedStatus }),
         })
         .then(response => response.json())
-        .then(data => console.log('Updated Status:', data))
+        .then(data => {console.log('Updated Status:', data);
+        Swal.fire({
+            icon: 'success',
+            title: 'Status Changed!',
+            text: `Order status has been changed to ${selectedStatus}.`,
+        })        
+    })
         .catch(error => console.error('Error updating status:', error));
     }
     </script>

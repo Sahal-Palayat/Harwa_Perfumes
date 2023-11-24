@@ -1,7 +1,10 @@
+const { query } = require('express')
 const {Admin}=require('../models/schemas')
 const {User}=require('../models/schemas')
 const {Product}=require('../models/schemas')
 const {Category}=require('../models/schemas')
+const {Order}=require('../models/schemas')
+const sharp=require('sharp')
 
 
 
@@ -12,6 +15,8 @@ const loadLogin = async(req,res)=>{
        
     } catch (error) {
        console.log(error.message);
+       res.render('users/page-404')
+
     }
  }
  
@@ -39,14 +44,80 @@ const loadLogin = async(req,res)=>{
          }
     } catch (error) {
         console.log(error.message);
+        res.render('users/page-404')
+
     }
  }   
 
  const loadHome=async (req,res)=>{
     try {
-        res.render('admin/dashboard')
+        const orderCount= await Order.find({}).count()
+        const productCount= await Product.find({}).count()
+        const users=await User.find({}).sort({ _id: -1 }).limit(3)
+        const order=await Order.find({}).sort({_id:-1}).limit(10).populate('user')
+        const products=  await Product.find()
+
+
+        const aggregationResult = await Order.aggregate([
+      { $match: 
+        { status: 'Delivered' } },
+      { $group:
+         { _id: null, totalPrice: { $sum: '$grandTotal' } } }
+    ]);
+
+//-------------monthly sales-----------
+    const monthlySales = await Order.aggregate([
+        {
+            $match: {
+                status: "Delivered", // Filter by status
+            },
+        },
+        {
+            $group: {
+                _id: {
+                    $month: '$createdAt',
+                },
+                count: { $sum: 1 },
+            },
+        },
+        {
+            $sort: {
+                '_id': 1,
+            },
+        },
+    ]);
+    const monthlySalesArray = Array.from({ length: 12 }, (_, index) => {
+        const monthData = monthlySales.find((item) => item._id === index + 1);
+        return monthData ? monthData.count : 0;
+    });
+    console.log(monthlySalesArray);
+
+//---------monthly sales end----------------
+
+//---------product graph---------------
+            const productsPerMonth = Array(12).fill(0);
+
+            // Iterate through each product
+            products.forEach(product => {
+            // Extract month from the createdAt timestamp
+            const creationMonth = product.createdAt.getMonth(); // JavaScript months are 0-indexed
+
+            // Increment the count for the corresponding month
+            productsPerMonth[creationMonth]++;
+            });
+//----------end product graph end
+
+console.log(productsPerMonth);
+
+
+
+    const totalRevenue = aggregationResult.length > 0 ? aggregationResult[0].totalPrice : 0;
+
+        res.render('admin/dashboard',{orderCount,productCount,users,order,totalRevenue,monthlySalesArray,productsPerMonth})
     } catch (error) {
         console.log(error.message);
+        res.render('users/page-404')
+
     }
  }
 
@@ -56,6 +127,8 @@ const loadLogin = async(req,res)=>{
         res.render('admin/userslist',{users:userData})
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
  }
 
@@ -66,6 +139,8 @@ const loadLogin = async(req,res)=>{
           res.render('admin/userslist',{users:usersData});
     } catch (error) {
        console.log(error)
+       res.render('users/page-404')
+
     }
  }
  
@@ -83,6 +158,8 @@ const loadLogin = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
  }
 
@@ -98,6 +175,8 @@ const loadLogin = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
  }
 
@@ -109,6 +188,8 @@ const loadLogin = async(req,res)=>{
         
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
  }
   
@@ -134,6 +215,8 @@ const loadLogin = async(req,res)=>{
 
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
  }   
  
@@ -149,6 +232,8 @@ const blockCategory=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 
@@ -164,6 +249,8 @@ const unBlockCategory=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 const loadEditCategory=async (req,res)=>{
@@ -174,6 +261,8 @@ const loadEditCategory=async (req,res)=>{
         res.render('admin/editcategory',{category:category})
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 
@@ -186,18 +275,30 @@ const editCategory=async (req,res)=>{
         res.redirect('/category')
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 
 
 const listProducts=async (req,res)=>{
     try {
-        const products=await Product.find({})
-        console.log(products);
-        res.render('admin/listproducts',{products:products})
+        const product=await Product.find({})
+ 
+        const itemsPerPage=10;
+        const page=parseInt(req.query.page)||1
+        const skip=(page-1)*itemsPerPage
+       
+        const products=await Product.find().skip(skip).limit(itemsPerPage)
+        const totalProducts= await Product.countDocuments()
+        const totalPages=Math.ceil(totalProducts/itemsPerPage)
+        res.render('admin/listproducts',{products:products,currentPage:page,totalPages,req})
+        
 
     } catch (error) {
         console.log(error); 
+        res.render('users/page-404')
+
     }
 
 }
@@ -212,7 +313,7 @@ const loadaddproduct=async (req,res)=>{
 }
 const productadding=async (req,res)=>{
     try {
-        console.log(req.body);
+        console.log(req.body,req.session.images,"=======================");
         const product={
             name:req.body.name,
             description:req.body.description,
@@ -222,13 +323,16 @@ const productadding=async (req,res)=>{
             volume:req.body.volume,
             fragrance:req.body.fragrance,
             quantity:req.body.quantity,
-            coverimage:'/products/' +req.session.images[0],
-            images:[
-                '/products/' +req.session.images[1],
-                '/products/' +req.session.images[2],
-                '/products/' +req.session.images[3]
+            coverimage: `/products/${req.session.images[0]}`,
+            images: [
+                `/products/${req.session.images[1]}`,
+                `/products/${req.session.images[2]}`,
+                `/products/${req.session.images[3]}`,
             ]
         }
+        console.log(product);
+ 
+
         req.session.images=null
         await Product.insertMany([product])
 
@@ -236,6 +340,8 @@ const productadding=async (req,res)=>{
 
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }  
 
@@ -248,6 +354,8 @@ const loadEditProducts=async (req,res)=>{
         res.render('admin/editproducts',{products})
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 
 }
@@ -271,6 +379,8 @@ const editProducts=async (req,res)=>{
 
     } catch (error) {
         console.log(error)
+        res.render('users/page-404')
+
     }
 }
 
@@ -285,6 +395,8 @@ const productList=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 
@@ -300,9 +412,123 @@ const   productUnlist=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        res.render('users/page-404')
+
     }
 }
 
+const loadSalesReport=async (req,res)=>{
+
+    try {
+
+        const orders= await Order.find({status:'Delivered'}).populate('user')
+
+        const itemsPerPage=3
+        const currentpage=parseInt(req.query.page)||1;
+        const startIndex=(currentpage-1)*itemsPerPage
+        const endIndex=startIndex+itemsPerPage
+        const totalpages=Math.ceil(orders.length/3)
+        const currentProduct=orders.slice(startIndex,endIndex)
+
+        console.log(currentProduct);
+        res.render('admin/salesreport',{orders:currentProduct,totalpages,currentpage})
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+const salesReport= async (req,res)=>{
+    try {
+        const date = req.query.date;
+        let orders;
+
+        const currentDate = new Date();
+
+        // Helper function to get the first day of the current month
+        function getFirstDayOfMonth(date) {
+            return new Date(date.getFullYear(), date.getMonth(), 1);
+        }
+
+        // Helper function to get the first day of the current year
+        function getFirstDayOfYear(date) {
+            return new Date(date.getFullYear(), 0, 1);
+        }
+
+        switch (date) {
+            case 'today':
+                orders = await Order.find({
+                    status: 'Delivered',
+                    createdAt: {
+                        $gte: new Date().setHours(0, 0, 0, 0), // Start of today
+                        $lt: new Date().setHours(23, 59, 59, 999), // End of today
+                    },
+                });
+                break;
+             case 'week':
+                const startOfWeek = new Date(currentDate);
+                startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Set to the first day of the week (Sunday)
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to the last day of the week (Saturday)
+                endOfWeek.setHours(23, 59, 59, 999);
+
+                orders = await Order.find({
+                    status: 'Delivered',
+                    createdAt: {
+                        $gte: startOfWeek,
+                        $lt: endOfWeek,
+                    },
+                }).populate('user');
+                break;
+            case 'month':
+                const startOfMonth = getFirstDayOfMonth(currentDate);
+                const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+                orders = await Order.find({
+                    status: 'Delivered',
+                    createdAt: {
+                        $gte: startOfMonth,
+                        $lt: endOfMonth,
+                    },
+                }).populate('user');
+                break;
+            case 'year':
+                const startOfYear = getFirstDayOfYear(currentDate);
+                const endOfYear = new Date(currentDate.getFullYear(), 11, 31, 23, 59, 59, 999);
+
+                orders = await Order.find({
+                    status: 'Delivered',
+                    createdAt: {
+                        $gte: startOfYear,
+                        $lt: endOfYear,
+                    },
+                }).populate('user');
+               
+                break;
+            default:
+                // Fetch all orders
+                orders = await Order.find({ status: 'Delivered' }).populate('user');
+        }
+
+        const itemsperpage = 3;
+        const currentpage = parseInt(req.query.page) || 1;
+        const startindex = (currentpage - 1) * itemsperpage;
+        const endindex = startindex + itemsperpage;
+        const totalpages = Math.ceil(orders.length / 3);
+        const currentproduct = orders.slice(startindex,endindex);
+
+   res.render('admin/salesreport',{orders:currentproduct,totalpages,currentpage})
+      
+    } catch (error) {
+        console.log('Error occurred in salesReport route:', error);
+        // Handle errors and send an appropriate response
+        res.status(500).json({ error: 'An error occurred' });
+    }
+}
 
 
  module.exports={
@@ -325,5 +551,7 @@ const   productUnlist=async (req,res)=>{
     productUnlist,
     loadEditCategory,
     editCategory,
-    searchUser
+    searchUser,
+    loadSalesReport,
+    salesReport
  } 

@@ -49,7 +49,7 @@ adminRouter.post('/editcategory',auth.isLogin,adminController.editCategory)
 adminRouter.get('/listproducts',auth.isLogin,adminController.listProducts)
 adminRouter.get('/addproduct',auth.isLogin,adminController.loadaddproduct)
 adminRouter.post('/addproduct',auth.isLogin,upload.fields([{name:'coverimage',maxCount:1},{name:'images'}]),adminController.productadding)
- 
+  
 adminRouter.get('/editproduct',auth.isLogin,adminController.loadEditProducts)
 adminRouter.post('/editproduct',auth.isLogin,upload.fields([{name:'images'}]),adminController.editProducts)
 adminRouter.get('/listproducts/unblock',auth.isLogin,adminController.productUnlist)
@@ -58,7 +58,8 @@ adminRouter.get('/listproducts/block',auth.isLogin,adminController.productList)
 adminRouter.get('/ordersList',auth.isLogin,orderController.loadOrderList)
 adminRouter.get('/orderDetails',auth.isLogin,orderController.loadOrderDetails)
 adminRouter.post('/updateStatus',auth.isLogin,orderController.updateStatus)
-
+adminRouter.get('/loadSalesReport',auth.isLogin,adminController.loadSalesReport)
+adminRouter.get('/salesReport',auth.isLogin,adminController.salesReport)
 
 
 

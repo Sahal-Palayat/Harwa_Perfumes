@@ -419,7 +419,7 @@
                                                                               <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
                                                                           </div>
                                                                               <h6 class="f-w-600"><%- user.name %></h6>
-                                                                               <p></p>
+                                                                              
                                                                                  <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
                                                                         </div>
                                                                     </div>
@@ -456,6 +456,7 @@
                                                                                 <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="twitter" data-abc="true"><i class="mdi mdi-twitter feather icon-twitter twitter" aria-hidden="true"></i></a></li>
                                                                                 <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="instagram" data-abc="true"><i class="mdi mdi-instagram feather icon-instagram instagram" aria-hidden="true"></i></a></li>
                                                                              </ul>
+                                                                             <a href="/forgotPass"> <p class="btn">Forgot password</p></a>
                                                                    </div>
                                                               </div>
                                                        </div>
@@ -479,7 +480,7 @@
                                                     <table class="table">
                                                         <thead>
                                                             <tr>
-                                                                <th>Order</th>
+                                                                <th>Order Id</th>
                                                                 <th>Date</th>
                                                                 <th>Status</th>
                                                                 <th>Total</th>
@@ -490,16 +491,43 @@
                                                         <tbody>
                                                             <% order.forEach(order=>{ %>
                                                                 <tr>
-                                                                    <td>#1357</td>
+                                                                    <td>ODR<%= order._id.toString().slice(-4) %></td>
                                                                     <td><%= order.createdAt.toLocaleString()  %></td>
                                                                     <td><%= order.status  %></td>
                                                                     <td><%=order.grandTotal  %></td>
                                                                     <% if(order.status==='Cancelled'){ %>
-                                                                        <td>Cancelled</td>
+                                                                        <td  ><a class="" style="color: red;">Cancelled</a></td>
                                                                     <%}else if(order.status==='Delivered'){ %>
-                                                                         <td><a class="btn-small d-block" style="color: rgb(96, 89, 89);">Return</a></td>
-                                                                   <%} else{%>
-                                                                    <td><a class="btn-small d-block" style="color: red;">Cancel</a></td>
+                                                                         <td><a class="btn btn-sm font-sm rounded btn-brand" style="color: rgb(96, 89, 89);">Return</a></td>
+                                                                   <%}else if(order.status==='Out For Delivery'){ %>
+                                                                        <td><a class="btn btn-sm font-sm rounded btn-brand" >Return</a></td>
+                                                                  <% }else if(order.status==='Confirmed','Pending','Shipped'){ %>
+                                                                        <td>    <a class="btn btn-sm font-sm rounded btn-brand" style="color:white; background: red;" data-bs-toggle="modal" name="status" id="status" data-bs-target="#cancelModal">Cancel</a></td>
+                                                                        <!-- Modal -->
+                                                                            <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                                                                                <div class="modal-dialog">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <h5 class="modal-title"  id="cancelModalLabel">Cancel Order</h5>
+                                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <form id="cancelForm">
+                                                                                                <label for="cancelReason"  class="form-label">Reason for cancellation:</label>
+                                                                                                <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3" required></textarea>
+                                                                                            </form>
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                            <button type="submit"  class="btn btn-danger" onClick="changeStatus('<%= order.id %>')" >Submit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+
+                                                               <%   }else{%>
+                                                                    <td><a class="btn-small d-block" style="color: red;"></a></td>    
                                                                     <%}%>
                                                                     <td><a href="/orderView?id=<%- order._id%>" class="btn-small d-block">View</a></td>
                                                                 </tr>
@@ -572,6 +600,7 @@
                                            
                                         </div>
                                     </div>
+
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
                                         <div class="card">
                                             <div class="card-header">
@@ -773,6 +802,36 @@
     <script src="user/assets/js/plugins/jquery.theia.sticky.js"></script>
     <!-- Template  JS -->
     <script src="./user/assets/js/main.js?v=3.4"></script>
+    <script>
+     
+
+        function changeStatus(orderId) {
+            const cancelReason = document.getElementById('cancelReason').value;
+            
+            
+           
+            $('#cancelModal').modal('hide');
+            // const selectedStatus = document.getElementById('status').value;
+          
+            // alert(selectedStatus)
+           
+
+                fetch('/cancelStatus', {
+                    method: 'post',
+                    headers: {
+                    'Content-Type': 'application/json',
+                },
+                    body: JSON.stringify({ orderId: orderId, reason:cancelReason }),
+                })
+                .then(response => {
+  if (response.ok) {
+    location.reload();
+  }
+});
+                
+            }
+    </script>
+    
 </body>
 
 </html>

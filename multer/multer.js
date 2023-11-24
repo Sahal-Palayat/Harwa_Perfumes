@@ -1,6 +1,7 @@
 const multer = require('multer')
 const path = require('path')
 const bcrypt = require('bcrypt')
+
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, 'public/products/');
@@ -11,9 +12,9 @@ const storage = multer.diskStorage({
             req.session.images = []
         }
         req.session.images.push(filename)
-        console.log( req.session.images);
-        // req.session.images = [... req.session.images].reverse();
-        console.log( req.session.images);
+        // console.log( req.session.images);
+        // // req.session.images = [... req.session.images].reverse();
+        // console.log( req.session.images);
         callback(null, filename)
     }
 });

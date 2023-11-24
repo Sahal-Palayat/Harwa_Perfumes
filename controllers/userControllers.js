@@ -200,11 +200,13 @@ try {
   const userId =req.session.user_id
   const user =await User.findById(userId)
   const userData=await User.find({is_admin:false}).sort({name:1})
-  const order=await Order.find({}).populate('user').populate('products.product')
-  
+  const order=await Order.find({user:req.session.user_id}).populate('user').populate('products.product')
+  order.reverse()
   res.render('users/userprofile',{users:userData,user:user,order})
 } catch (error) {
   console.log(error);
+  res.render('users/page-404')
+
 }
 }
 
@@ -215,6 +217,8 @@ const loadEditProfile=async (req,res)=>{
     res.render('users/editprofile',{user:user})
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 }
 const editProfile=async (req,res)=>{
@@ -240,6 +244,8 @@ const editProfile=async (req,res)=>{
     
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 }
 
@@ -252,6 +258,8 @@ const loadAddAddress= async(req,res)=>{
     res.render('users/addaddress',{users:userData,user:user})
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 }
 const addAddress=async (req,res)=>{
@@ -288,6 +296,8 @@ const addAddress=async (req,res)=>{
 
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 }
 
@@ -301,6 +311,8 @@ const loadEditAddress=async (req,res)=>{
     res.render('users/editaddress',{user:user,address:address})
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 }
 
@@ -327,6 +339,8 @@ const editAddress=async (req,res)=>{
 
       }else{
         console.log('address not found');
+ 
+
       }
     }
 
@@ -350,6 +364,8 @@ const deleteAddress= async (req,res)=>{
     res.redirect('/userprofile')
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 }
 
@@ -364,16 +380,158 @@ const loadCheckout= async(req,res)=>{
     res.render('users/checkout',{user:user,cart:cart,products:products})
   } catch (error) {
     console.log(error);
+    res.render('users/page-404')
+
   }
 } 
   
+      // let changepass=async(req,res,next)=>{
+      //   const {oldpass,newpass,conpass}=req.body;
+      //   console.log(oldpass);
+      //   console.log(newpass);
+      //   console.log(conpass);
+
+      //   const findpass=await User.findById({_id:req.session.user},{_id:0,password:1})
+      //   console.log(findpass.password)
+      //   if(findpass.password!==oldpass)
+      //   {
+      //     return res.status(400).json({message:'Invalid Password',status:false})
+      //   }
+      //   if(newpass!==conpass)
+      //   {
+      //     return res.status(400).json({message:'Passwords do not match',status:false})
+      //   }
+      //   const insertPass=await User.findByIdAndUpdate({_id:req.session.user},{password:conpass})
+      //   if(insertPass)
+      //   {
+      //     console.log("Password updated");
+      //     res.status(200).json({status:true})
+      //   }
+      // }
+      const crypto = require('crypto');
+
+      const randomToken = () => {
+      return crypto.randomBytes(32).toString('hex');
+      };
+
+      const resetPasswordMail = async (user, token) => {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user:'sahalpalayat@gmail.com',
+            pass:'xrmx vgxg nrve dyfx'
+          },
+        });
+
+        const mailOptions = {
+          from:'sahalpalayat@gmail.com',
+          to: 'sahalpalayat5894@gmail.com',
+          subject: 'Change password link',
+          html: `
+            <p>Hello ${user.name},</p>
+            <p>You requested a password reset for your account. Click the link below to reset your password:</p>
+            <a href="http://127.0.0.1:7000/resetPassword?token=${token}">Reset Password</a>
+            <p>If you didn't request this, please ignore this email.</p>
+          `,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Mail sent successfully:', info);
+      } catch (error) {
+        console.error('Failed to send link via mail:', error);
+        throw new Error('Failed to send password reset link');
+      }
+      };
+
+      const forgotpass = async (req, res, next) => {
+      
+      try {
+        const user = await User.findOne({ _id: req.session.user_id }, {email: 1 });
+        console.log(user);
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        const token = randomToken();
+        console.log(token);
+        console.log(user);
+        user.token = token;
+        user.tokenExpiry = Date.now() + 36000000;
+        await user.save();
+
+      const sendMail=  await resetPasswordMail(user.email, token);
+      if(sendMail)
+      {
+      console.log('set set')
+      }
+      res.redirect('/userprofile')
+       
+      } catch (error) {
+        console.log(error) 
+        res.render('users/page-404')
+  
+      }
+      };
+
+
+      const resetPassword=async(req,res,next)=>{
+      try{ 
+        console.log('user keri')
+      const token=req.query.token;
+      console.log(token,'/////////////////////////');
+      const user=await User.findOne({token:token,tokenExpiry:{$gte:Date.now()}})
+      console.log(user);
+      if(!user) 
+      {
+      res.status(404).json({nouser:true});
+      } else {
+        let categories = await Category.find({ active: 'true' })
+  
+        res.render('users/forgotpassword',{token,categories});
+      }
+      
+      }
+      catch (error) {
+      console.error('Error in reset-password route:', error);
+      res.status(500).send('Internal Server Error');
+      }
+      }
 
 
 
 
+      const getpassword=async(req,res,next)=>{
+      try{
+      const{token,npassword,cpassword}=req.body;
+      console.log('hjdhciwd')
+      console.log(token);
+      console.log(npassword);
+      console.log(cpassword);
 
+      const user = await User.findOne({token: token,
+                                         tokenExpiry: { $gt: Date.now() }, 
+                                          });
 
+      if (!user) {
+        return res.status(400).json({ error: 'Invalid or expired reset token' });
+      }
 
+      const hashedPassword=await bcrypt.hash(npassword,10)
+      user.password=hashedPassword;
+      user.token=undefined;
+      user.tokenExpiry=undefined;
+
+      await user.save();
+      res.redirect('/login');
+      } catch (error) {
+        console.error('Error in reset-password route:', error);
+        res.render('users/page-404')
+
+      }
+      }
+ 
+ 
 
 module.exports= {
     loadRegister,
@@ -393,5 +551,8 @@ module.exports= {
     deleteAddress,
     loadEditProfile,
     editProfile,
-    loadCheckout
+    loadCheckout,
+    forgotpass,
+    resetPassword,
+    getpassword
 }
