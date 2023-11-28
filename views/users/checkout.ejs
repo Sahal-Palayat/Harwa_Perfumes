@@ -358,7 +358,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xl-3 col-sm-6">
-                                        <input class="form-check-input" type="radio" required="" onclick="selectAddress('<%= user.address[i]._id %>')" style="width: 1rem; height: 1rem;" value="<%= user.address[i]._id  %>" name="addressId" id="checkoutShippingMethod">
+                                        <input class="form-check-input" type="radio" required="" onclick="selectAddress('<%= user.address[i]._id %>')" style="width: 1rem; height: 1rem;" value="<%= user.address[i]._id  %>" name="addressId" id="checkoutShippingMethod" checked="">
                                         
                                         <div class="card">
                                             <div class="card-body">
@@ -468,8 +468,9 @@
                                     <h4>Payment</h4>
                                 </div>
                                 <div class="payment_option">
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" value="COD" name="paymentMethod" onclick="selectPaymentMethod('COD')" id="exampleRadios3" >
+
+                                    <div class="custome-radio" >
+                                        <input class="form-check-input" required="" type="radio" value="COD" name="paymentMethod" onclick="selectPaymentMethod('COD')" id="exampleRadios3" checked="">
                                         <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer"  aria-controls="bankTranfer">Cash On Delivery (COD)</label>
                                         <div class="form-group collapse in" id="bankTranfer">
                                             <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
@@ -478,7 +479,7 @@
                                     
                                     
                                     <div class="custome-radio">
-                                            <input class="form-check-input" required="" type="radio" value="Razorpay" name="paymentMethod" name="paymentMethod" onclick="selectPaymentMethod('Razorpay')" id="exampleRadios5" >
+                                            <input class="form-check-input" required="" type="radio" value="Razorpay" name="paymentMethod" name="paymentMethod" onclick="selectPaymentMethod('Razorpay')" id="exampleRadios5" checked="">
                                             <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Razorpay</label>
                                         <div class="form-group collapse in" id="paypal">
                                             <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
@@ -487,7 +488,7 @@
 
                                     
                                     <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" value="Wallet" name="paymentMethod" name="paymentMethod" onclick="selectPaymentMethod('Wallet')" id="exampleRadios1" >
+                                        <input class="form-check-input" required="" type="radio" value="Wallet" name="paymentMethod" name="paymentMethod" onclick="selectPaymentMethod('Wallet')" id="exampleRadios1" checked="" >
                                         <label class="form-check-label" for="exampleRadios1" data-bs-toggle="collapse" data-target="#wallet" aria-controls="wallet">Wallet</label>
                                         <div class="form-group collapse in" id="Wallet">
                                             <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>

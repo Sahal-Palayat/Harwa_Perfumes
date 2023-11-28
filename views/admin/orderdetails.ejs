@@ -17,41 +17,51 @@
                             </span> <br>
                             <small class="text-muted">Order ID: 3453012</small>
                         </div>
-                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                            <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="statusChange">
-                                <% if (order.status === 'Pending') { %>
-                                    <option value="Confirmed">Confirmed</option>
-                                    <option value="Pending" selected>Pending</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                    <option value="Delivered" selected>Delivered</option>
-                                <% } else if (order.status === 'Confirmed') { %>
-                                    <option value="Shipped">Shipped</option>
-                                    <option value="Confirmed" selected>Confirmed</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                    <option value="Delivered" selected>Delivered</option>
-                                <% } else if (order.status === 'Delivered') { %>
-                                        <option value="Shipped">Shipped</option>
-                                        <option value="Confirmed" >Confirmed</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                        <option value="Delivered" selected>Delivered</option>
-                                <% } else if (order.status === 'Shipped') { %>
-                                    <option value="Out For Delivery">Out For Delivery</option>
-                                    <option value="Shipped" selected>Shipped</option>
-                                    <option value="Delivered" selected>Delivered</option>
+                        <%  if(order.status==='Cancelled'){ %>
+                                    
 
-                                <% } else{ %>
-                                    <option value="Out For Delivery">Out For Delivery</option>
-                                    <option value="Cancelled" selected>Cancelled</option>
-                                    <option value="Delivered" >Delivered</option>
+                            <% }else{ %>
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="statusChange">
+                                        <% if (order.status === 'Pending') { %>
+                                            <option value="Confirmed">Confirmed</option>
+                                            <option value="Pending" selected>Pending</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="Delivered" selected>Delivered</option>
+                                            <option value="Out For Delivery">Out For Delivery</option>
+                                            <option value="Shipped">Shipped</option>
 
-                                    <% } %>
-                            </select>
-                     
+                                        <% } else if (order.status === 'Confirmed') { %>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Confirmed" selected>Confirmed</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="Delivered" selected>Delivered</option>
+                                            <option value="Out For Delivery">Out For Delivery</option>
 
-                            <a class="btn btn-primary" onclick="changeStatus('<%= order.id %>',event)" type="submit" >Save</a>
-                            <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
-                        </div>
-                    </div>
+                                        <% } else if (order.status === 'Delivered') { %>
+                                                <option value="Return">Return</option>
+                                                <option value="Delivered" selected>Delivered</option>
+                                        <% } else if (order.status === 'Shipped') { %>
+                                            <option value="Out For Delivery">Out For Delivery</option>
+                                            <option value="Shipped" selected>Shipped</option>
+                                            <option value="Delivered" selected>Delivered</option>
+        
+                                        <% } else{ %>
+                                            <option value="Out For Delivery">Out For Delivery</option>
+                                            <option value="Delivered" >Delivered</option>
+        
+                                            <% } %>
+                                    </select>
+                             
+        
+                                    <a class="btn btn-primary" onclick="changeStatus('<%= order.id %>',event)" type="submit" >Save</a>
+                                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                                </div>
+                            </div>
+                               
+
+                             <% } %>
+                      
                 </header> <!-- card-header end// -->
                 <div class="card-body">
                     <div class="row mb-50 mt-20 order-info-wrap">
@@ -66,7 +76,7 @@
                                       <%= order.user.name%> <br>  <%= order.user.email%>  <br>   <%= order.user.mobile%> 
                                     </p>
                                     <!-- <a href="#">View profile</a> -->
-                                </div>
+                                 </div>
                             </article>
                         </div> <!-- col// -->
                         <div class="col-md-4">

@@ -96,24 +96,52 @@ const loadLogin = async(req,res)=>{
 
 //---------product graph---------------
             const productsPerMonth = Array(12).fill(0);
-
-            // Iterate through each product
             products.forEach(product => {
-            // Extract month from the createdAt timestamp
-            const creationMonth = product.createdAt.getMonth(); // JavaScript months are 0-indexed
-
-            // Increment the count for the corresponding month
+            const creationMonth = product.createdAt.getMonth();
             productsPerMonth[creationMonth]++;
             });
 //----------end product graph end
 
-console.log(productsPerMonth);
+
+
+//------------order ststus--------------------
+
+                    const orderStatus = await Order.aggregate([
+                        {
+                            $match: {
+                                status: {
+                                    $in: ['Delivered', 'Pending', 'Cancelled', 'Out for Delivery']
+                                }
+                            },
+                        },
+                        {
+                            $group: {
+                                _id: '$status', // Group by status instead of month
+                                count: { $sum: 1 },
+                            },
+                        },
+                        {
+                            $sort: {
+                                '_id': 1,
+                            },
+                        },
+                    ]);
+
+                    const orderStatusArray = Array.from({ length: 4 }, (_, index) => {
+                        const status = ['Delivered', 'Pending', 'Cancelled', 'Out for Delivery'][index];
+                        const statusData = orderStatus.find((item) => item._id === status);
+                        return statusData ? statusData.count : 0;
+                    });
+                    
+            console.log(orderStatusArray);
+//-----------end order status
+
 
 
 
     const totalRevenue = aggregationResult.length > 0 ? aggregationResult[0].totalPrice : 0;
 
-        res.render('admin/dashboard',{orderCount,productCount,users,order,totalRevenue,monthlySalesArray,productsPerMonth})
+        res.render('admin/dashboard',{orderCount,productCount,users,order,totalRevenue,monthlySalesArray,productsPerMonth,orderStatusArray})
     } catch (error) {
         console.log(error.message);
         res.render('users/page-404')
@@ -199,7 +227,8 @@ console.log(productsPerMonth);
         const {name,description}=req.body
         const checkData=await Category.findOne({name:name})
         if(checkData){
-            res.render('/category',{errMessage:'User already found'})
+            const data=await Category.find({})
+            res.render('admin/categorylist',{errMessage:'Category already found',categories:data})
         }else{
            
             console.log(req.body);
@@ -210,7 +239,8 @@ console.log(productsPerMonth);
   
             await category.save()
             const data=await Category.find({})
-            res.render('admin/categorylist',{categories:data})
+            const errMessage='';
+            res.render('admin/categorylist',{errMessage,categories:data})
         }
 
     } catch (error) {

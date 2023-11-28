@@ -18,7 +18,7 @@ const addressModel=new mongoose.Schema({
    
     city:{
         type:String
-    },
+    },                                                     
     landmark:{
         type:String
     },

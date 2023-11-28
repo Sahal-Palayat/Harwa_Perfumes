@@ -18,7 +18,7 @@ productsPerMonth = productsPerMonth.split(',')
 productsPerMonth = productsPerMonth.map((item)=> Number(item))
 productsPerMonth = Array(productsPerMonth);
 productsPerMonth = productsPerMonth[0]
-console.log(productsPerMonth)
+
 
  // Output: object (assuming the parsed result is an array)
 
@@ -62,54 +62,56 @@ console.log(productsPerMonth)
     } //End if
 
     /*Sale statistics Chart*/
-    if ($('#myChart2').length) {
-        var ctx = document.getElementById("myChart2");
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-            labels: ["900", "1200", "1400", "1600"],
-            datasets: [
-                {
-                    label: "US",
-                    backgroundColor: "#5897fb",
-                    barThickness:10,
-                    data: [233,321,783,900]
-                }, 
-                {
-                    label: "Europe",
-                    backgroundColor: "#7bcf86",
-                    barThickness:10,
-                    data: [408,547,675,734]
-                },
-                {
-                    label: "Asian",
-                    backgroundColor: "#ff9076",
-                    barThickness:10,
-                    data: [208,447,575,634]
-                },
-                {
-                    label: "Africa",
-                    backgroundColor: "#d595e5",
-                    barThickness:10,
-                    data: [123,345,122,302]
-                },
-            ]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        labels: {
-                        usePointStyle: true,
-                        },
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    } //end if
+  
     
 })(jQuery);
+
+
+let orderStatusArray = document.getElementById("orderStatusArray").value;
+
+orderStatusArray = orderStatusArray.trim(); // Remove leading and trailing whitespace
+orderStatusArray = orderStatusArray.split(',')
+orderStatusArray = orderStatusArray.map((item)=> Number(item))
+orderStatusArray = Array(orderStatusArray);
+orderStatusArray = orderStatusArray[0]
+console.log(orderStatusArray)
+
+// Sample data for the polar area chart
+            const polarData = {
+                labels: ['Delivered', 'Pending', 'Cancelled', 'Out For Delivery'],
+                datasets: [{
+                    data: orderStatusArray,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1,
+                }],
+            };
+
+            // Configuration options for the polar area chart
+            const polarOptions = {
+                scale: {
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                },
+            };
+
+            // Get the canvas element for the polar area chart
+            const ctx2 = document.getElementById('myChart2').getContext('2d');
+
+            // Create the polar area chart
+            const myChart2 = new Chart(ctx2, {
+                type: 'polarArea',
+                data: polarData,
+                options: polarOptions,
+            });

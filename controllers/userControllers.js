@@ -150,10 +150,10 @@ const verifyUser = async (req, res) => {
   const loadHome= async(req,res)=>{
     try {
         const userData=await User.findById(req.session.user_id)
-      
+        const category=await Category.find({})
         const products = await Product.find({status:true})
-    
-        res.render('users/home',{user:userData,products})
+    console.log(category);
+        res.render('users/home',{user:userData,products,category})
     } catch (error) {
         console.log(error);
     }

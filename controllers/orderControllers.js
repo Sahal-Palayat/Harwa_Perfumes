@@ -2,7 +2,9 @@ const { User, Product, Category, Address, Cart, Order } = require('../models/sch
 const bcrypt = require('bcrypt')
 const { default: mongoose } = require('mongoose')
 const Razorpay=require('razorpay')
-
+var easyinvoice = require('easyinvoice');
+const { Readable } = require("stream");
+const mongodb = require("mongodb");
 
 //---------------user side-----------------------
 
@@ -16,7 +18,7 @@ const placeOrder = async (req, res) => {
     //-------------------------COD--------
     try {
     const addressId = req.body.addressId;
-    const paymentMethod = req.body.payment;
+    const paymentMethod = req.body.payment;  
     const userId = req.session.user_id;
     const grandTotal=req.body.grandTotal;
   
@@ -30,11 +32,19 @@ const placeOrder = async (req, res) => {
         let orderData;
   
         const cart = await Cart.findOne({ user: userId });
-       
+        let products=[]
         if (cart) {
          const Products= cart.items.filter((item) => item.selected === true);
        
-          
+
+         for (let element of cart.items) {
+            products.push({ product: element.product, quantity: element.quantity });
+            const product = await Product.findOne({ _id: element.product });
+            let quantity = product.quantity - element.quantity;
+            await Product.findByIdAndUpdate(product._id, { quantity });
+          }
+
+
           orderData = {
             user: userId,
             address:addressId,
@@ -59,10 +69,12 @@ const placeOrder = async (req, res) => {
 
    if(paymentMethod==='Razorpay'){
     console.log('razorpayyyyyyyy');
+
+   
     
     const options={
       
-        amount:grandTotal,
+        amount:grandTotal*100,
         currency:'INR',
         receipt:'order_receipt_'+Date.now(),
         payment_capture:1
@@ -94,6 +106,8 @@ const placeOrder = async (req, res) => {
             return res.status(501).json({ status: true });
 
             }
+            // let products=[]
+
             let orderData;
         
                 const cart = await Cart.findOne({ user: userId });
@@ -101,6 +115,12 @@ const placeOrder = async (req, res) => {
                 if (cart) {
                 const Products= cart.items.filter((item) => item.selected === true);
             
+            //     for (let element of cart.items) {
+            //         products.push({ product: element.product, quantity: element.quantity });
+            //         const product = await Product.findOne({ _id: element.product });
+            //         let quantity = product.quantity - element.quantity;
+            //         await Product.findByIdAndUpdate(product._id, { quantity });
+            //       }
                 
                 orderData = {
                     user: userId,
@@ -157,7 +177,7 @@ const placeOrder = async (req, res) => {
       address: req.body.addressId,
       products: selectedProducts.map(item => ({ ...item})),
       paymentMethod: req.body.payment,
-      grandTotal: req.body.total,
+      grandTotal: req.body.total/100,
       payment_id: payment_details.razorpay_payment_id,
       payment_status: 'paid',
       order_Id: payment_details.razorpay_payment_id,
@@ -271,6 +291,8 @@ const cancelStatus=async (req,res)=>{
 
   //------------------admin side-----------------------
 
+  
+
 const loadOrderList=async (req,res)=>{
     try {
         const order= await Order.find({}).populate('user')
@@ -316,6 +338,104 @@ const updateStatus=async (req,res)=>{
 }
 
 
+const invoiceDownload=async (req,res)=>{
+   
+        try {
+                const id = req.query.id;
+                console.log('///////////////// ',id);
+                const userId = req.session.user_id;
+                const result = await Order.findOne({ _id: id }).populate('address')
+               
+                const user = await User.findById({ _id: userId });      
+                const address =  result.address
+                console.log(address,'//////////////');
+                if (!result || !result.address) {
+                    return res.status(404).json({ error: "Order not found or address missing" });
+                }
+        
+                const order = {
+                    id: id,
+                    total: result.grandTotal,
+                    date: result.createdAt, // Use the formatted date
+                    paymentMethod: result.paymentMethod,
+                    orderStatus: result.status,
+                    name: address.name,
+                    mobile: address.mobile,
+                    house: address.areastreet,
+                    pincode: address.pincode,
+                    city: address.city,
+                    state: address.state,
+                    products: result.products,
+                };
+                console.log(order,';;;;;;;;;;;;;;;;;;;;;;;');
+        
+                // Assuming products is an array, adjust if needed
+                const products = order.products.map((product, i) => ({
+                    quantity: parseInt(product.quantity),
+                    description: product.name,
+                    price: parseInt(product.price),
+                    total: parseInt(result.grandTotal),
+                    "tax-rate": 0,
+                }));
+        
+                      
+                const isoDateString = order.date;
+                const isoDate = new Date(isoDateString);
+            
+                const options = { year: "numeric", month: "long", day: "numeric" };
+                const formattedDate = isoDate.toLocaleDateString("en-US", options);
+                const data = {
+                  customize: {
+                    //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html
+                  },
+                  images: {
+                    // The invoice background
+                    background: "",
+                  },
+                  // Your own data
+                  sender: {
+                    company: "Harwa Perfumes",
+                    address: "Decide Your Feel",
+                    city: "Ernakulam",
+                    country: "India",
+                  },
+                  client: {
+                    company: "Customer Address",
+                    "zip": order.name,
+                    "city": order.city,
+                    "address": order.pincode,
+                    // "custom1": "custom value 1",
+                    // "custom2": "custom value 2",
+                    // "custom3": "custom value 3"
+                  },
+                  information: {
+                    number: "order" + order.id,
+                    date: formattedDate,
+                  },
+                  products: products,
+                  "bottom-notice": "Happy shoping and visit Evara again",
+                };
+            let pdfResult = await easyinvoice.createInvoice(data);
+                const pdfBuffer = Buffer.from(pdfResult.pdf, "base64");
+            
+                // Set HTTP headers for the PDF response
+                res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
+                res.setHeader("Content-Type", "application/pdf");
+            
+                // Create a readable stream from the PDF buffer and pipe it to the response
+                const pdfStream = new Readable();
+                pdfStream.push(pdfBuffer);
+                pdfStream.push(null);
+            
+                pdfStream.pipe(res);
+              } catch (error) {
+                console.log(error);
+                res.status(500).json({ error: error.message });
+              }
+      
+}
+
+
 
 
 
@@ -330,5 +450,6 @@ module.exports={
     cancelStatus,
     updatePayment,
     addWallet,
-    updateWallet
+    updateWallet,
+    invoiceDownload
 }

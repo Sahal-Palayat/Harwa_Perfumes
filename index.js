@@ -24,5 +24,9 @@ app.use(cookieParser());
 app.use('/',userRouter);
 app.use('/',adminRouter);
 
-
+app.use((req, res, next) => {
+    res.status(404).render('users/page-404'); 
+  });
+  
+  
 app.listen(7000,()=>console.log('Server running...'))

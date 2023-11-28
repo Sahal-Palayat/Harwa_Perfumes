@@ -19,12 +19,7 @@ userRouter.use(session({
     saveUninitialized:true
  }))
   
-// userRouter.use(bodyparser.json())
-// userRouter.use(bodyparser.urlencoded({extended:true}))
-// userRouter.use(logger('dev'))
-// userRouter.set('view engine','ejs')
-// userRouter.set('views','./views/users')
-  
+
 userRouter.get('/',auth.isLogout,userController.loadMain)
 userRouter.get('/register',auth.isLogout,userController.loadRegister);
 userRouter.post('/register',auth.isLogout,userController.insertUser);
@@ -56,6 +51,7 @@ userRouter.post('/selectProduct',auth.isLogin,cartController.selectProduct)
 
 userRouter.post('/placeOrder',auth.isLogin,orderController.placeOrder)
 userRouter.get('/orderView',auth.isLogin,orderController.loadOrderView)
+userRouter.get('/invoiceDownload',auth.isLogin,orderController.invoiceDownload)
 userRouter.post('/cancelStatus',auth.isLogin,orderController.cancelStatus)
 userRouter.get ('/resetPassword',userController.resetPassword)
 userRouter.post ('/resetPassword',userController.getpassword)
@@ -63,4 +59,12 @@ userRouter.get('/forgotPass',auth.isLogin,userController.forgotpass)
 userRouter.post('/updatePayment',auth.isLogin,orderController.updatePayment)
 userRouter.post('/addWallet',auth.isLogin,orderController.addWallet)
 userRouter.post('/updateWallet',auth.isLogin,orderController.updateWallet)
+
+
+
+
+
+
+
+
 module.exports=userRouter;   

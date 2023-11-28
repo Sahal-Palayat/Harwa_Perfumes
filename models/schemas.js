@@ -139,7 +139,8 @@ const productModel=new mongoose.Schema({
     createdAt:{
         type:Date,
         default:Date.now
-    }
+    },
+   
 })
 
 const categoryModel=new mongoose.Schema({
@@ -161,28 +162,46 @@ const categoryModel=new mongoose.Schema({
     }
 
 })
-const cartItemModel = new mongoose.Schema({
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-  },
-  quantity: {
-    type: Number,
-    default: 1,
-  },
+// const cartItemModel = new mongoose.Schema({
+//   product: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'Product',
+//   },
+//   quantity: {
+//     type: Number,
+//     default: 1,
+//   },
 
-  selected:{
-    type:Boolean,
-    default:false
-  }
+//   selected:{
+//     type:Boolean,
+//     default:false
+//   },
   
-});
+  
+// });
 
 const cartModel = new mongoose.Schema({
   user: {
     type: String, 
   },
-  items: [cartItemModel],
+  items: [
+{
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+    
+      selected:{
+        type:Boolean,
+        default:false
+      },
+}
+
+  ],
 });
 
 const orderModel=new mongoose.Schema({
@@ -214,6 +233,11 @@ const orderModel=new mongoose.Schema({
               
             },
             total:Number,
+            productStatus: {
+                type: String,
+                enum:  ['Pending', 'Shipped', 'Delivered','Cancelled','Out for Delivery','Confirmed','Return'],
+                default: 'Pending',
+            },
         }],
         paymentMethod: {
             type: String,

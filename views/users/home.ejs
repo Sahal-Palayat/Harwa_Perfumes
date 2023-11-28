@@ -113,15 +113,13 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="nav-tab-one" data-bs-toggle="tab" data-bs-target="#tab-one" type="button" role="tab" aria-controls="tab-one" aria-selected="true">All Categories</button>
                         </li>
+                        <% category.forEach(category=>{ %>
+
+                      
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="nav-tab-two" data-bs-toggle="tab" data-bs-target="#tab-two" type="button" role="tab" aria-controls="tab-two" aria-selected="false">Men</button>
+                            <button class="nav-link" id="nav-tab-two" data-bs-toggle="tab" data-bs-target="#tab-two" type="button" role="tab" aria-controls="tab-two" aria-selected="false"><%=category.name  %></button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="nav-tab-three" data-bs-toggle="tab" data-bs-target="#tab-three" type="button" role="tab" aria-controls="tab-three" aria-selected="false">Women</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="nav-tab-four" data-bs-toggle="tab" data-bs-target="#tab-four" type="button" role="tab" aria-controls="tab-three" aria-selected="false">Unisex</button>
-                        </li>
+                  <%  }) %>
                     </ul>
                     <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
                 </div>
@@ -129,17 +127,30 @@
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                                
-                                    <div class="row product-grid-4">
+                             <div class="row product-grid-4">
                                         <%  products.forEach(product=>{  %>
                                     <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                         <div class="product-cart-wrap mb-30">
                                             <div class="product-img-action-wrap">
+                                               
+                                                
                                                 <div class="product-img product-img-zoom">
                                                     <a href="/productdetails?id=<%= product._id %>">
-                                                        <img class="default-img" style="height: 300px;" src="<%=product.coverimage%>" alt="">
-                                                        <img class="hover-img" style="height: 300px;" src="<%=product.coverimage%>" alt="">
+                                                        <% if (product.quantity > 0) { %>
+                                                            <img class="default-img" style="width: 100%; height: 300px; object-fit: cover;" src="<%= product.coverimage %>" alt="">
+                                                        <% } else { %>
+                                                            <div style="position: relative; height: 300px; display: flex; justify-content: center; align-items:center;">
+                                                                <div style="z-index: 50000; width: 100%; position: absolute; color: rgb(255, 255, 255); padding-top: 15px;  height: 50px; background-color: rgba(39, 29, 29, 0.344);
+                                                                    font-size: 17px; font-weight: 600; text-align: center;">Out Of Stock</div>
+                                                                <img class="default-img" style="width: 250px; height: 300px; filter: grayscale(100%);" src="<%= product.coverimage %>" alt="">
+                                                            </div>
+                                                        <% } %>
+                                                        <img class="hover-img" style=" height: 300px; object-fit: cover;" src="<%= product.coverimage %>" alt="">
                                                     </a>
                                                 </div>
+                                                
+
+
                                                 <div class="product-action-1">
                                                     <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
                                                     <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
@@ -164,17 +175,26 @@
                                                     <span class="old-price"><%=product.price%></span>
                                                 </div>
                                                 <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" type="submit" class="action-btn hover-up" onclick="addToCart('<%= product.id %>',event)" href=""><i class="fi-rs-shopping-bag-add"></i></a>
+                                          
+                                                    <% if (product.quantity > 0) { %>
+                                                        <a aria-label="Add To Cart" class="action-btn hover-up" onclick="addToCart('<%= product.id %>',event)" href=""><i class="fi-rs-shopping-bag-add"></i></a>
+                                                       
+                                                            
+                                                    <% } %>
                                                     
-                                                </div>
+                                       </div>
                                             </div>
                                         </div>
                                     </div>
                                     <% }) %>
                                 </div>
-                               
-                        
+
                     </div>
+                  
+                
+          
+
+
                 </div>
                 <!--End tab-content-->
             </div>

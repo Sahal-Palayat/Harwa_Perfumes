@@ -21,12 +21,7 @@ adminRouter.use(session({
     saveUninitialized:true
  }))  
    
-// adminRouter.use(bodyparser.json())
-// adminRouter.use(bodyparser.urlencoded({extended:true}))
-// adminRouter.use(logger('dev'))
-// adminRouter.set('view engine','ejs')
-// adminRouter.set('views','./views/admin')
-   
+
         
 adminRouter.get('/admin',auth.isLogout,adminController.loadLogin)
 adminRouter.post('/admin',auth.isLogout,adminController.verifyAdmin)

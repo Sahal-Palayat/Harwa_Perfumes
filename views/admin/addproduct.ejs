@@ -190,6 +190,7 @@
     <script src="/admin/assets/js/addproduct.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
+   
     <script>
       let cropper;
 
@@ -215,9 +216,9 @@
 
 
 function loadImage(id) {
-    alert('vannu')
+   
     const input = document.getElementById(id);
-    alert(input+'llll')
+    
     const canvas = document.getElementById(`show${id}`);
     
     const file = input.files[0];
@@ -274,6 +275,8 @@ function uploadCroppedImage(id) {
         });
     }
 }
+
+
 
     </script>
 
