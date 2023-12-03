@@ -13,7 +13,8 @@
                         <option value="year">Report of this year</option>
                     </select>
                 </div>
-                
+                <button class="btn btn-primary" id="downloadPdf">Download PDF</button>
+                <button class="btn btn-primary" id="filterSales">Filter Sales</button>
             </div>
             <div class="row">
                 <div class="col-md-9">
@@ -47,7 +48,7 @@
                 <td>ODR<%= orders[i]._id.toString().slice(-4) %></td>
                 <td><b><%= orders[i].user.name  %></b></td>
                
-                <td>$<%= orders[i].grandTotal %></td>
+                <td><%= orders[i].grandTotal %></td>
 
                 <% if (orders[i].status=='Pending') { %>
 
@@ -185,5 +186,74 @@ document.getElementById('filterOrders').addEventListener('change', function () {
 });
 
 
-        </script>
+      
+            document.getElementById('filterOrders').addEventListener('change', function () {
+        const selectedValue = this.value;
+        let url = '/salesReport?date=' + selectedValue;
+      
+        if (selectedValue === 'custom') {
+          const startDate = document.getElementById('startDate').value;
+          const endDate = document.getElementById('endDate').value;
+          url +=  `&startDate=${startDate}&endDate=${endDate}`;
+        }
+      
+        window.location.href = url;
+      });
+      
+      document.getElementById('downloadPdf').addEventListener('click', function () {
+        const selectedValue = document.getElementById('filterOrders').value;
+        const url = `/salesReport?date=${selectedValue}&downloadPdf=true`;
+        window.location.href = url;
+      });
+      
+        
+      
+        
+      
+          document.getElementById('filterSales').addEventListener('click', async () => {
+          const startDate = document.getElementById('startDate').value;
+          const endDate = document.getElementById('endDate').value;
+      
+          // Validate the dates and perform the filtering logic
+          if (startDate && endDate) {
+              // Make a fetch request to get sales data within the specified date range
+              const response = await fetch(`/admin/sales?startDate=${startDate}&endDate=${endDate}`);
+              const filteredSales = await response.json();
+      
+              // Update the table with the filtered data
+              updateSalesTable(filteredSales);
+          } else {
+              // Handle invalid date range (e.g., show an alert)
+              alert('Please select both start and end dates.');
+          }
+      });
+      
+      function updateSalesTable(filteredSales) {
+          console.log(filteredSales);
+          const tableBody = document.querySelector('.table tbody');
+          tableBody.innerHTML = ''; // Clear existing rows
+      
+          if (filteredSales.length > 0) {
+              filteredSales.forEach(order => {
+                  // Render table rows for filtered sales
+                  const row = `
+                      <tr>
+                          <td>ODR${order._id.toString().replace(/\D/g, '').slice(-6)}</td>
+                          <td>${order.user ? order.user.name : 'N/A'}</td>
+                          <td>${order.grandTotal}</td>
+                          <td>${order.status}</td>
+                          <td>${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</td>
+                          <td class="text-end"> Action </td>
+                      </tr>
+                  `;
+                  tableBody.insertAdjacentHTML('beforeend', row);
+              });
+          } else {
+              // If no orders found in the filtered range
+              const noDataRow = '<tr><td colspan="6">No item found in the specified date range</td></tr>';
+              tableBody.insertAdjacentHTML('beforeend', noDataRow);
+          }
+      }
+      </script>
+      
         <%- include('footer') %>

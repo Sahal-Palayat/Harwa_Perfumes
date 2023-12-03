@@ -105,6 +105,12 @@ const productModel=new mongoose.Schema({
         type:Number,
         
     },
+    offerPrice:{
+        type:Number
+    },
+    offerPercentage:{
+        type:Number
+    },
     volume:{
         type:Number
        
@@ -231,6 +237,9 @@ const orderModel=new mongoose.Schema({
             price:{
                 type:Number,
               
+            },
+            offerPrice:{
+                type:Number
             },
             total:Number,
             productStatus: {

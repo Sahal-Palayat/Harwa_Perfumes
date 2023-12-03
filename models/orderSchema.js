@@ -29,6 +29,10 @@ const orderModel=new mongoose.Schema({
             type:Number,
           
         },
+        basePrice:{
+          type:Number
+        },
+        
         total:Number,
     }],
     paymentMethod: {

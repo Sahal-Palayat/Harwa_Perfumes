@@ -4,6 +4,7 @@ const { default: mongoose } = require('mongoose')
 const Razorpay=require('razorpay')
 var easyinvoice = require('easyinvoice');
 const { Readable } = require("stream");
+const { log } = require('console');
 const mongodb = require("mongodb");
 
 //---------------user side-----------------------
@@ -61,7 +62,7 @@ const placeOrder = async (req, res) => {
           console.log('Order added successfully');
           return res.status(200).json({ status: true });
         }
-      }
+      } 
 //-----------------end cod--------------
  
 
@@ -230,7 +231,7 @@ const placeOrder = async (req, res) => {
   const updateWallet=async (req,res)=>{
     try {
         const userId=req.session.user_id
-        const amount =req.body.amount
+        const amount =req.body.amount/100
         console.log(amount);
         console.log(userId);
         const updatewallet = await User.findByIdAndUpdate(
@@ -296,8 +297,15 @@ const cancelStatus=async (req,res)=>{
 const loadOrderList=async (req,res)=>{
     try {
         const order= await Order.find({}).populate('user')
-        order.reverse()
-        res.render('admin/orderslist',{order})
+
+
+        const itemsperpage = 6;
+        const currentpage = parseInt(req.query.page) || 1;
+        const startindex = (currentpage - 1) * itemsperpage;
+        const endindex = startindex + itemsperpage;
+        const totalpages = Math.ceil(order.length / 3);
+        const currentproduct = order.slice(startindex,endindex);
+        res.render('admin/orderslist',{order:currentproduct,totalpages,currentpage})
     } catch (error) {
         console.log(error);
         res.render('users/page-404')
@@ -309,7 +317,7 @@ const loadOrderList=async (req,res)=>{
 const loadOrderDetails=async (req,res)=>{
     try {
         const order=await Order.findById(req.query.id).populate('user').populate('products.product')
-        console.log(order,req.query.id);
+      
         
         res.render('admin/orderdetails',{order:order})
     } catch (error) {
@@ -337,6 +345,26 @@ const updateStatus=async (req,res)=>{
     }
 }
 
+const invoice=async(req,res)=>{
+   try {
+        console.log('thsan is quirey >>>>>>',req.query);
+
+        const user=await User.findById(req.session.user_id)
+        const order=await Order.findById(req.query.id).populate('user')
+        console.log('this is order dtaa <<<<<',order,user);
+
+        const address = order.user.address.find((item) => item._id.toString() === order.address.toString());
+
+
+        if (order){
+            res.render('users/invoice',{order,user,address})
+        }
+                
+            } catch (error) {
+                console.log('Error hapence in invoice controller in the funtion invoice',error);
+            }
+    }
+
 
 const invoiceDownload=async (req,res)=>{
    
@@ -344,15 +372,18 @@ const invoiceDownload=async (req,res)=>{
                 const id = req.query.id;
                 console.log('///////////////// ',id);
                 const userId = req.session.user_id;
-                const result = await Order.findOne({ _id: id }).populate('address')
-               
+                const result = await Order.findById({ _id: id }).populate('user').populate('products.product')
+             // Extract the user's address based on the Order's address ID
+
+                const address = result.user.address.find((item) => item._id.toString() === result.address.toString());
+
+                
                 const user = await User.findById({ _id: userId });      
-                const address =  result.address
-                console.log(address,'//////////////');
+               
                 if (!result || !result.address) {
                     return res.status(404).json({ error: "Order not found or address missing" });
                 }
-        
+         
                 const order = {
                     id: id,
                     total: result.grandTotal,
@@ -367,17 +398,16 @@ const invoiceDownload=async (req,res)=>{
                     state: address.state,
                     products: result.products,
                 };
-                console.log(order,';;;;;;;;;;;;;;;;;;;;;;;');
-        
+                console.log(order,';;;;;;;;;;;;;;;;;;;;;;;');        
                 // Assuming products is an array, adjust if needed
                 const products = order.products.map((product, i) => ({
                     quantity: parseInt(product.quantity),
-                    description: product.name,
-                    price: parseInt(product.price),
+                    description: product.product.name,
+                    price: parseInt(product.product.offerPrice),
                     total: parseInt(result.grandTotal),
                     "tax-rate": 0,
                 }));
-        
+        console.log(products);
                       
                 const isoDateString = order.date;
                 const isoDate = new Date(isoDateString);
@@ -415,9 +445,10 @@ const invoiceDownload=async (req,res)=>{
                   products: products,
                   "bottom-notice": "Happy shoping and visit Evara again",
                 };
+                console.log(data+'/////////////////////////////////////////////////////////////////');
             let pdfResult = await easyinvoice.createInvoice(data);
                 const pdfBuffer = Buffer.from(pdfResult.pdf, "base64");
-            
+           
                 // Set HTTP headers for the PDF response
                 res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
                 res.setHeader("Content-Type", "application/pdf");
@@ -426,12 +457,12 @@ const invoiceDownload=async (req,res)=>{
                 const pdfStream = new Readable();
                 pdfStream.push(pdfBuffer);
                 pdfStream.push(null);
-            
                 pdfStream.pipe(res);
-              } catch (error) {
-                console.log(error);
+            } catch (error) {
+                console.error('Error in invoiceDownload:', error);
                 res.status(500).json({ error: error.message });
-              }
+            }
+            
       
 }
 
@@ -451,5 +482,6 @@ module.exports={
     updatePayment,
     addWallet,
     updateWallet,
-    invoiceDownload
+    invoiceDownload,
+    invoice
 }

@@ -20,6 +20,9 @@ const productModel=new mongoose.Schema({
         type:Number,
         
     },
+    offerPrice:{
+        type:Number
+    },
     volume:{
         type:Number
        

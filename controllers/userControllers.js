@@ -3,8 +3,8 @@ const bcrypt=require('bcrypt')
 const randomstring=require('randomstring')
 const nodemailer=require('nodemailer')
 const { default: mongoose } = require('mongoose')
-
-
+const Coupon= require('../models/couponSchema')
+const Banner=require('../models/bannerSchema')
 
 //--------------user register-
 const loadRegister= async(req,res)=>{
@@ -152,8 +152,9 @@ const verifyUser = async (req, res) => {
         const userData=await User.findById(req.session.user_id)
         const category=await Category.find({})
         const products = await Product.find({status:true})
+        const banner= await Banner.find()
     console.log(category);
-        res.render('users/home',{user:userData,products,category})
+        res.render('users/home',{user:userData,products,category,banner})
     } catch (error) {
         console.log(error);
     }
@@ -248,6 +249,49 @@ const editProfile=async (req,res)=>{
 
   }
 }
+const loadShop = async (req, res) => {
+  try {
+      const userId=req.session.user_id;
+      const user=await User.findById(userId)
+        const product = await Product.find({status:true})
+      const category=await Category.find()
+
+      
+
+
+      const itemsperpage = 8;
+      const currentpage = parseInt(req.query.page) || 1;
+      const startindex = (currentpage - 1) * itemsperpage;
+      const endindex = startindex + itemsperpage;
+      const totalpages = Math.ceil(product.length / 6);
+      const currentproduct = product.slice(startindex,endindex);
+
+
+
+
+
+
+
+      res.render('users/shop', { product:currentproduct, totalpages,currentpage,user,category });
+  } catch (error) {
+      console.log('Error happened in product controller shop function', error);
+  }
+}
+//-----------
+
+const aboutpage= async(req,res)=>{
+  try {
+      const userId=req.session.user_id
+      const user=await User.findById(userId)
+      res.render('users/about',{user})
+      
+  } catch (error) {
+      console.log('Error Happence in th about Ctrl in;; the funtion aboutpage',error);
+  }
+}
+
+
+
 
 //-------------address
 const loadAddAddress= async(req,res)=>{
@@ -376,8 +420,9 @@ const loadCheckout= async(req,res)=>{
     const user= await User.findById(userId)
     const cart = await Cart.findOne({ user: user._id }).populate("items.product");
    const products= cart.items.filter((item)=>item.selected===true)
+   const coupon =await Coupon.find()
    console.log(products);
-    res.render('users/checkout',{user:user,cart:cart,products:products})
+    res.render('users/checkout',{user:user,cart:cart,products:products,coupon})
   } catch (error) {
     console.log(error);
     res.render('users/page-404')
@@ -554,5 +599,7 @@ module.exports= {
     loadCheckout,
     forgotpass,
     resetPassword,
-    getpassword
+    getpassword,
+    aboutpage,
+    loadShop
 }

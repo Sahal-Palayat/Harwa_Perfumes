@@ -5,7 +5,7 @@ const {Product}=require('../models/schemas')
 const {Category}=require('../models/schemas')
 const {Order}=require('../models/schemas')
 const sharp=require('sharp')
-
+const PDFDocument=require('pdfkit')
 
 
 const loadLogin = async(req,res)=>{
@@ -90,7 +90,6 @@ const loadLogin = async(req,res)=>{
         const monthData = monthlySales.find((item) => item._id === index + 1);
         return monthData ? monthData.count : 0;
     });
-    console.log(monthlySalesArray);
 
 //---------monthly sales end----------------
 
@@ -133,7 +132,6 @@ const loadLogin = async(req,res)=>{
                         return statusData ? statusData.count : 0;
                     });
                     
-            console.log(orderStatusArray);
 //-----------end order status
 
 
@@ -322,8 +320,11 @@ const listProducts=async (req,res)=>{
         const products=await Product.find().skip(skip).limit(itemsPerPage)
         const totalProducts= await Product.countDocuments()
         const totalPages=Math.ceil(totalProducts/itemsPerPage)
+
+
+
         res.render('admin/listproducts',{products:products,currentPage:page,totalPages,req})
-        
+    
 
     } catch (error) {
         console.log(error); 
@@ -471,6 +472,7 @@ const loadSalesReport=async (req,res)=>{
 
 
 const salesReport= async (req,res)=>{
+
     try {
         const date = req.query.date;
         let orders;
@@ -551,7 +553,38 @@ const salesReport= async (req,res)=>{
         const totalpages = Math.ceil(orders.length / 3);
         const currentproduct = orders.slice(startindex,endindex);
 
-   res.render('admin/salesreport',{orders:currentproduct,totalpages,currentpage})
+        if (req.query.downloadPdf) {
+            const doc = new PDFDocument();
+            // Customize your PDF content here based on the sales report data
+            doc.text('Sales Report', { align: 'center' });
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, { align: 'center' });
+            doc.moveDown();
+            let orderCounter = 0;
+            // Add your sales data to the PDF
+            orders.forEach((order) => {
+              doc.text(`Order ID: ORD${String(order._id.toString().slice(-4)).padStart(5, '0')}`, { fontSize: 12 });
+              doc.text(`Customer Name: ${order.user ? order.user.name : 'N/A'}`, { fontSize: 12 });
+              doc.text(`Price: ${order.grandTotal}`, { fontSize: 12 });
+              doc.text(`Status: ${order.status}`, { fontSize: 12 });
+              doc.text(`Date: ${order.createdAt ? order.createdAt.toLocaleDateString() : 'N/A'}`, { fontSize: 12 });
+              doc.moveDown(); // Add spacing between entries
+            });
+
+            
+            // Set the response headers for PDF download
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename="sales_report.pdf"');
+            // Pipe the PDF content to the response stream
+            doc.pipe(res);
+            doc.end();
+          } else{
+            res.render('admin/salesreport',{orders:currentproduct,totalpages,currentpage})
+
+          }
+
+
+
+
       
     } catch (error) {
         console.log('Error occurred in salesReport route:', error);
@@ -560,6 +593,140 @@ const salesReport= async (req,res)=>{
     }
 }
 
+
+
+
+const downloadPdf = async (req, res) => {
+    try {
+        // ... Your existing sales report generation logic ...
+  
+        // Generate PDF using pdfkit
+        const doc = new PDFDocument();
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename=sales_report.pdf');
+        doc.pipe(res);
+  
+        // Add PDF content here
+        doc.text('Sales Report', { align: 'center', underline: true });
+        // ... Add more content based on your requirements ...
+  
+        doc.end();
+  
+    } catch (error) {
+        console.log('Error occurred in downloadPdf route:', error);
+        res.status(500).json({ error: 'An error occurred' });
+    }
+  };
+
+//-----------offer---------------------------------------------------------------------------------
+
+const loadProductOffer=async (req,res)=>{
+    try {
+        const product=await Product.find()
+        const itemsperpage = 8;
+        const currentpage = parseInt(req.query.page) || 1;
+        const startindex = (currentpage - 1) * itemsperpage;
+        const endindex = startindex + itemsperpage;
+        const totalpages = Math.ceil(product.length / 8);
+        const currentproduct = product.slice(startindex,endindex);
+       
+    
+       
+
+
+
+        res.render('admin/productOffer',{product: currentproduct, totalpages, currentpage})
+    } catch (error) {
+        console.log('Error happence in the offerctrl in the funtion productOfferpage ')
+    }
+}
+
+
+
+
+// updating the product offer-------------------------------------------------
+const updateProductOffer= async(req,res)=>{
+    try{
+        
+        const { id,offerPrice}= req.body
+        console.log(id,offerPrice,'id,offerPrice');
+
+        const product= await Product.findById(id)
+           console.log(product,'product');
+
+
+           const cappedPercentage = Math.min(offerPrice, 100);
+
+           const percentage = (product.price * cappedPercentage) / 100
+           product.offerPrice=Math.round( product.price-percentage)
+           product.offerPercentage=cappedPercentage
+          await product.save()
+ 
+            console.log(product.offerPrice,'updated product price');
+            res.redirect('/offerProduct')
+
+    }catch(error){
+        console.log(error,'error');
+    }
+}
+//-------------------------------------------------------------------------------------------
+
+const loadCategoryOffer= async(req,res)=>{
+    try {
+        const catogary=await Category.find()
+
+
+        const itemsperpage = 8;
+        const currentpage = parseInt(req.query.page) || 1;
+        const startindex = (currentpage - 1) * itemsperpage;
+        const endindex = startindex + itemsperpage;
+        const totalpages = Math.ceil(catogary.length / 8);
+        const currentproduct = catogary.slice(startindex,endindex);
+
+        res.render('admin/catogaryOffer',{catogary:currentproduct, totalpages, currentpage })
+        
+    } catch (error) {
+        console.log('Error happened in the offerctrl in the function catogaryOffer:', error);
+        
+    }
+}
+
+//-------------------make changed in catogary offer --------------------------------------
+
+const updateCategoryOffer = async (req, res) => {
+    try {
+        const { id, offerPercentage } = req.body;
+        // Find the category
+        const category = await Category.findById(id);
+
+        // Find all products in the category
+        const products = await Product.find({ category: category.name });
+        // Update prices based on the offer percentage
+        products.forEach(async (product) => {
+
+            const discountAmount = (offerPercentage / 100) * product.price;
+
+
+            const newOfferPrice =  Math.round(product.price - discountAmount);
+            const newPrice = product.price;
+
+
+            await Product.findByIdAndUpdate(product._id, {
+                offerPrice: newOfferPrice,
+                price:newPrice ,
+            });
+        });
+
+        console.log('Updated prices for products in category:', category.name);
+
+        res.redirect('/offerProduct');
+    } catch (error) {
+        console.log('Error happened in the offerctrl in the function updateCatogaryOffer:', error);
+        // Handle the error appropriately, e.g., send an error response to the client
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+//----------------------------------------------
 
  module.exports={
     loadLogin,
@@ -583,5 +750,10 @@ const salesReport= async (req,res)=>{
     editCategory,
     searchUser,
     loadSalesReport,
-    salesReport
+    salesReport,
+    loadProductOffer,
+    updateProductOffer,
+    loadCategoryOffer,
+    updateCategoryOffer,
+    downloadPdf
  } 

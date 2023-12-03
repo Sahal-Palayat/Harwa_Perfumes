@@ -81,21 +81,28 @@
                             
                             
                         </table>
-                    </div> <!-- table-responsive //end -->
+                    </div> 
+                    <% if (totalpages) { %>
+                        <div class="pagination">
+                        <% if (currentpage > 1) { %>
+                        <button class="btn btn-sm"><a href="?page=<%= currentpage - 1 %>">Previous</a></button>
+                        <% } %>
+                        
+                        <% for (let i = 1; i <= totalpages; i++) { %> <!-- Change the loop to start from 1 and go up to totalpages -->
+                        <button class="btn btn-sm"><a href="?page=<%= i %>" class="<%= i === currentpage ? 'active' : '' %>"><%= i %></a></button>
+                        <% } %>
+                        
+                        <% if (currentpage < totalpages) { %>
+                        <button class="btn btn-sm"><a href="?page=<%= currentpage + 1 %>">Next</a></button>
+                        
+                        <% } %>
+                        </div>
+                        <% } %>
+                    <!-- table-responsive //end -->
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
-            <div class="pagination-area mt-15 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div>
+        
+
         </section> <!-- content-main end// -->
      
     </main>

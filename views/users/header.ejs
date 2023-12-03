@@ -13,8 +13,11 @@
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="user/assets/imgs/theme/Harwa Perfumes.png"">
+    <link rel="shortcut icon" type="image/x-icon" href="user/assets/imgs/theme/Harwa Perfumes.png">
     <!-- Template CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="...">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     <link rel="stylesheet" href="user/assets/css/main.css?v=3.4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -55,7 +58,7 @@
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="/userprofile?id=<%= user._id %>">
                                         <img alt="Evara" src="user/assets/imgs/theme/icons/profile.jpg.jpg">
                                         <span class="pro-count blue">2</span>
                                     </a>
@@ -114,7 +117,7 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1 d-block d-lg-none">
-                        <a href="index.html"><img src="user/assets/imgs/theme/logo.svg" alt="logo"></a>
+                        <a href="/home"><img src="user/assets/imgs/theme/logo.svg" alt="logo"></a>
                     </div>
                     <div class="header-nav d-none d-lg-flex">
                         
@@ -125,9 +128,9 @@
                                         
                                     </li>
                                     <li>
-                                        <a href="page-about.html">About</a>
+                                        <a href="/about">About</a>
                                     </li>
-                                    <li><a href="shop-grid-right.html">Shop</a>
+                                    <li><a href="/shop">Shop</a>
                                 
                                     </li>
                                     <li class="position-static"><a href="#">Mega menu </i></a>

@@ -11,6 +11,8 @@ const auth = require('../middleware/userAuth')
 const userController=require('../controllers/userControllers')
 const cartController=require('../controllers/cartController')
 const orderController=require('../controllers/orderControllers')
+const couponController=require('../controllers/couponController')
+
 const config=require('../config/config')
 userRouter.use(nocache());
 userRouter.use(session({
@@ -51,7 +53,12 @@ userRouter.post('/selectProduct',auth.isLogin,cartController.selectProduct)
 
 userRouter.post('/placeOrder',auth.isLogin,orderController.placeOrder)
 userRouter.get('/orderView',auth.isLogin,orderController.loadOrderView)
+
+
+userRouter.get('/invoice',auth.isLogin,orderController.invoice)
 userRouter.get('/invoiceDownload',auth.isLogin,orderController.invoiceDownload)
+
+
 userRouter.post('/cancelStatus',auth.isLogin,orderController.cancelStatus)
 userRouter.get ('/resetPassword',userController.resetPassword)
 userRouter.post ('/resetPassword',userController.getpassword)
@@ -60,7 +67,11 @@ userRouter.post('/updatePayment',auth.isLogin,orderController.updatePayment)
 userRouter.post('/addWallet',auth.isLogin,orderController.addWallet)
 userRouter.post('/updateWallet',auth.isLogin,orderController.updateWallet)
 
+userRouter.post('/validationCoupon',auth.isLogin,couponController.validateCoupon)
 
+
+userRouter.get('/shop',auth.isLogin,userController.loadShop)
+userRouter.get('/about',auth.isLogin,userController.aboutpage)
 
 
 

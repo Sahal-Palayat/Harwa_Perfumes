@@ -1,0 +1,217 @@
+<%- include ('header')%>
+  
+    
+        <section class="product-tabs section-padding position-relative wow fadeIn animated">
+            <div class="bg-square"></div>
+            <div class="container">
+                
+                <div class="tab-header">
+                    <div>
+                        <div class="custom_select">
+                            <select id="categoryFilter" class="form-select select-nice">
+                                <option value="All Categories" selected>All Categories</option>
+                
+                                <% category.forEach(element => { %>
+                                    <option value="<%= element.name %>"><%= element.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                
+                
+                    
+                    <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
+                </div>
+                <!--End nav-tabs-->
+                <div class="tab-content wow fadeIn animated" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                               
+                             <div class="row product-grid-4">
+                                        <%  product.forEach(product=>{  %>
+                              
+                                    <div class="col-lg-3 col-md-4 col-12 col-sm-6 product-container  <%= product.category %>">
+                                        <div class="product-cart-wrap mb-30">
+                                            <div class="product-img-action-wrap">
+                                               
+                                                
+                                                <div class="product-img product-img-zoom">
+                                                    <a href="/productdetails?id=<%= product._id %>">
+                                                        <% if (product.quantity > 0) { %>
+                                                            <img class="default-img" style="width: 100%; height: 300px; object-fit: cover;" src="<%= product.coverimage %>" alt="">
+                                                        <% } else { %>
+                                                            <div style="position: relative; height: 300px; display: flex; justify-content: center; align-items:center;">
+                                                                <div style="z-index: 50000; width: 100%; position: absolute; color: rgb(255, 255, 255); padding-top: 15px;  height: 50px; background-color: rgba(39, 29, 29, 0.344);
+                                                                    font-size: 17px; font-weight: 600; text-align: center;">Out Of Stock</div>
+                                                                <img class="default-img" style="width: 250px; height: 300px; filter: grayscale(100%);" src="<%= product.coverimage %>" alt="">
+                                                            </div>
+                                                        <% } %>
+                                                        <img class="hover-img" style=" height: 300px; object-fit: cover;" src="<%= product.coverimage %>" alt="">
+                                                    </a>
+                                                </div>
+                                                
+
+
+                                                <div class="product-action-1">
+                                                    <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                    <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                </div>
+                                                <div class="product-badges product-badges-position product-badges-mrg">
+                                                    <span class="hot">Hot</span>
+                                                </div>
+                                            </div>
+                                            <div class="product-content-wrap">
+                                                <div class="product-category" id="product-container">
+                                                    <a href=""><%=product.category%></a>
+                                                </div>
+                                                <h2><a href="/productdetails/?id=<%= product._id %>"><%=product.name%></a></h2>
+                                                <div class="rating-result" title="90%">
+                                                    <span>
+                                                        <span>90%</span>
+                                                    </span>
+                                                </div>
+                                                <div class="product-price">
+                                                    <span><%=product.offerPrice%> </span>
+                                                    <span class="old-price"><%=product.price%></span>
+                                                </div>
+                                                <div class="product-action-1 show">
+                                          
+                                                    <% if (product.quantity > 0) { %>
+                                                        <a aria-label="Add To Cart" class="action-btn hover-up" onclick="addToCart('<%= product.id %>',event)" href=""><i class="fi-rs-shopping-bag-add"></i></a>
+                                                       
+                                                            
+                                                    <% } %>
+                                                    
+                                       </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                                </div>
+
+                    </div>
+                </div>
+                                       <!--pagination-->
+                                       <% if (totalpages) { %>
+                                        <div class="pagination">
+                                          <% if (currentpage > 1) { %>
+                                            <button class="btn btn-sm"><a href="?page=<%= currentpage - 1 %>">Previous</a></button>
+                                          <% } %>
+                                      
+                                          <% for (let i = 1; i <= totalpages; i++) { %> <!-- Change the loop to start from 1 and go up to totalpages -->
+                                            <button class="btn btn-sm"><a href="?page=<%= i %>" class="<%= i === currentpage ? 'active' : '' %>"><%= i %></a></button>
+                                          <% } %>
+                                      
+                                          <% if (currentpage < totalpages) { %>
+                                            <button class="btn btn-sm"><a href="?page=<%= currentpage + 1 %>">Next</a></button>
+                                          <% } %>
+                                        </div>
+                                      <% } %>
+            
+            </div>
+            
+        </section>
+   
+        
+    </main>
+
+
+
+
+    
+    <!-- Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="text-center">
+                    <h5 class="mb-5">Now Loading</h5>
+                    <div class="loader">
+                        <div class="bar bar1"></div>
+                        <div class="bar bar2"></div>
+                        <div class="bar bar3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Vendor JS-->
+    <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="user/assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+    <script src="user/assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="user/assets/js/plugins/slick.js"></script>
+    <script src="user/assets/js/plugins/jquery.syotimer.min.js"></script>
+    <script src="user/assets/js/plugins/wow.js"></script>
+    <script src="user/assets/js/plugins/jquery-ui.js"></script>
+    <script src="user/assets/js/plugins/perfect-scrollbar.js"></script>
+    <script src="user/assets/js/plugins/magnific-popup.js"></script>
+    <script src="user/assets/js/plugins/select2.min.js"></script>
+    <script src="user/assets/js/plugins/waypoints.js"></script>
+    <script src="user/assets/js/plugins/counterup.js"></script>
+    <script src="user/assets/js/plugins/jquery.countdown.min.js"></script>
+    <script src="user/assets/js/plugins/images-loaded.js"></script>
+    <script src="user/assets/js/plugins/isotope.js"></script>
+    <script src="user/assets/js/plugins/scrollup.js"></script>
+    <script src="user/assets/js/plugins/jquery.vticker-min.js"></script>
+    <script src="user/assets/js/plugins/jquery.theia.sticky.js"></script>
+    
+    <!-- Template  JS -->
+    <script src="./user/assets/js/main.js?v=3.4"></script>
+    <script src="/user/assets/js/userRegistration.js"></script>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+         
+         function addToCart(id) {
+    $.ajax({
+        url: `/addToCart?id=${id}`,
+        method: "get",
+        success: (response) => {
+            if (response.status) {
+                
+                Swal.fire({
+                    title: 'ADD TO CART',
+                    text: 'Product Added to cart',
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                });
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: (error) => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+}
+
+     </script>
+
+
+<script>
+    document.getElementById('categoryFilter').addEventListener('change', function () {
+    const selectedCategory = this.value;
+
+    // Hide all products
+    document.querySelectorAll('.product-container').forEach(function (product) {
+        product.style.display = 'none';
+    });
+
+    // Show only products of the selected category
+    if (selectedCategory === 'All Categories') {
+        document.querySelectorAll('.product-container').forEach(function (product) {
+            product.style.display = 'block';
+        });
+    } else {
+        document.querySelectorAll('.product-container.' + selectedCategory).forEach(function (product) {
+            product.style.display = 'block';
+        });
+    }
+});
+
+</script>
+<%- include ('footer')  %>
