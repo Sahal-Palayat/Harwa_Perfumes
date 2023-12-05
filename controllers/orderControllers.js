@@ -186,7 +186,7 @@ const placeOrder = async (req, res) => {
   
     console.log(orderData);
     const order = await Order.insertMany([orderData]);
-  
+    res.status(200).json({ message: 'Success' });
     if (order) {
       console.log('order added ');
     }
@@ -272,7 +272,7 @@ const cancelStatus=async (req,res)=>{
         const orderId=req.body.orderId
         const reason=req.body.reason
         // const status=req.body.status
-        
+        alert(orderId)
         const update=await Order.findByIdAndUpdate(orderId,{status:'Cancelled'})
         if(update){
             console.log(update);
@@ -466,6 +466,60 @@ const invoiceDownload=async (req,res)=>{
       
 }
 
+const returnOrder = async (req, res) => {
+    try {
+
+        console.log('hjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+      const orderId = req.query.orderId;
+      const userId = req.session.user_id;
+  
+   
+      const user = await User.findOne({ _id: userId });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      const order = await Order.findByIdAndUpdate(orderId, {
+        status: 'Returned'
+      }, { new: true });
+  
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+  
+      user.wallet += order.grandTotal;
+
+
+      wallet= user.wallet
+        // amount: user.wallet ,
+       
+    
+    
+   
+      await user.save(wallet);
+  
+      for (const productData of order.products) {
+        const productId = productData.ProductId;
+        const quantity = productData.quantity;
+  
+        // Find the corresponding product in the database
+        const product = await Product.findById(productId);
+  
+        if (product) {
+          product.quantity += quantity;
+          await product.save();
+        }
+      }
+      
+  
+      res.redirect('/userprofile');
+    } catch (error) {
+      console.log('Error occurred in returnOrder function:', error);
+     
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
 
 
 
@@ -483,5 +537,6 @@ module.exports={
     addWallet,
     updateWallet,
     invoiceDownload,
-    invoice
+    invoice,
+    returnOrder
 }

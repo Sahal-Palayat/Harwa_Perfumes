@@ -42,7 +42,7 @@
                         <a href="index.html"><img style="width: 200px;" src="user/assets/imgs/theme/Harwa Perfumes.png" alt="logo"></a>
                     </div>
                     <div class="header-right">
-                        <div class="search-style-2">
+                        <!-- <div class="search-style-2">
                             <form action="#">
                                 <select class="select-active">
                                     <option>All Categories</option>
@@ -54,7 +54,17 @@
                                 <input type="text" style="width: 30rem;" placeholder="Search for items...">
                             </form>
                             
-                        </div>
+                        </div> -->
+
+                            <div class="input-group" style="width: 40rem;">
+                                <input type="search" class="form-control rounded" placeholder="Search" id="search_box" aria-label="Search" aria-describedby="search-addon" />
+                                <button type="button" class="btn btn-dark" data-mdb-ripple-init>search</button>
+                            </div>
+                            <div style="position: absolute;z-index:999;width:304px;" id="resultsContainer" ></div>
+                        
+
+
+
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
@@ -136,7 +146,7 @@
                                     <li class="position-static"><a href="#">Mega menu </i></a>
                                         
                                     
-                                    <li><a href="#">Pages <i class="fi-rs-angle-down"></i></a>
+                                    <li><a href="/fullOrder">Orders <i class="fi-rs-angle-down"></i></a>
                                         
                                     </li>
                                     <li>
@@ -212,3 +222,55 @@
             </div>
         </div>
     </header>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI/t1aZlKwO8K5kExzqPc4U5e02uBfTuj1DEFePc=" 
+        crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script>
+     $(document).ready(function () {
+    $("#search_box").on("input", function () {
+        var value = $("#search_box").val().toLowerCase();
+        var resultsContainer = $("#resultsContainer");
+        resultsContainer.empty();
+
+        $.get('/searchProduct', { q: value }, (data) => {
+            data.forEach(element => {
+                console.log(element);
+                var resultDiv = $("<div>").css({
+                    'width':'33rem',
+                    'color': 'black',
+                    'background-color': 'white',
+                    'padding': '7px',
+                    'border': '1px solid black',
+                    'text-align': 'center',
+                    'cursor': 'pointer'
+                }).text(element.name);
+
+                resultDiv.hover(
+                    function () {
+                        $(this).css({
+                            'background-color': 'black',
+                            'color': 'white'
+                        });
+                    },
+                    function () {
+                        $(this).css({
+                            'background-color': 'white',
+                            'color': 'black'
+                        });
+                    }
+                );
+
+                resultDiv.click(function () {
+                   
+                    window.location.href = '/productdetails?id=' + element._id;
+                });
+                resultsContainer.append(resultDiv);
+            });
+        });
+    });
+});
+    </script>

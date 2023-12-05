@@ -244,7 +244,7 @@ const orderModel=new mongoose.Schema({
             total:Number,
             productStatus: {
                 type: String,
-                enum:  ['Pending', 'Shipped', 'Delivered','Cancelled','Out for Delivery','Confirmed','Return'],
+                enum:  ['Pending', 'Shipped', 'Delivered','Cancelled','Out for Delivery','Confirmed','Returned'],
                 default: 'Pending',
             },
         }],
@@ -254,7 +254,7 @@ const orderModel=new mongoose.Schema({
           },
           status: {
             type: String,
-            enum: ['Pending', 'Shipped', 'Delivered','Cancelled','Out for Delivery','Confirmed'],
+            enum: ['Pending', 'Shipped', 'Delivered','Cancelled','Out for Delivery','Confirmed',"Returned"],
             default: 'Pending',
           },
           createdAt:

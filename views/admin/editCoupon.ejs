@@ -6,7 +6,7 @@
                     <div class="content-header col-8">
                         <h2 class="content-title">Edit Coupon</h2>
                         <div>
-                            <form action="/updateCoupon" method="post" onsubmit="return validateForm()" >
+                            <form id="editcoupon" action="/updateCoupon" method="post"  >
 
                                 <button type="submit" class="btn btn-md rounded font-sm hover-up">Edit Coupon</button>
                             </div>
@@ -16,13 +16,14 @@
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="mb-4">
+                                    <p id="error"></p>
                                     <label for="product_title" class="form-label">Coupon name</label>
                                     <input type="text" placeholder="Type here" value="<%= coupon.name%>" name="name" class="form-control" id="product_title">
                                 </div>
                                 <div class="row gx-3">
                                     <div class="mb-4">
                                         <label for="product_title" class="form-label">description</label>
-                                        <input type="text" placeholder="Type here" value="<%= coupon.description%>" name="description" class="form-control" id="product_title">
+                                        <input type="text" placeholder="Type here" value="<%= coupon.description%>" name="description" class="form-control" id="product_Description">
                                     </div>
                                     <div class="col-md-4  mb-3">
                                         <label for="product_color" class="form-label">Offer Price</label>
@@ -56,60 +57,67 @@
           
         </section>
         <script>
-            function validateForm() {
-                // Reset any existing error messages
-                clearErrorMessages();
-        
-                const name = document.getElementsByName('name')[0].value;
-                const discription = document.getElementsByName('discription')[0].value;
-                const offerPrice = document.getElementsByName('offerPrice')[0].value;
-                const minimumAmount = document.getElementsByName('minimumAmount')[0].value;
-                const expiryDate = document.getElementsByName('expiryDate')[0].value;
-        
-                let isValid = true; // Assume the form is valid by default
-        
-                // Check if name is empty
-                if (name.trim() === '') {
-                    displayErrorMessage('name', 'Please enter a coupon name.');
-                    isValid = false;
-                }
-        
-                // Check if description is empty
-                if (discription.trim() === '') {
-                    displayErrorMessage('description', 'Please enter a description.');
-                    isValid = false;
-                }
-        
-                // Check if offerPrice is a non-negative number
-                if (!/^\d+(\.\d{1,2})?$/.test(offerPrice) || parseFloat(offerPrice) < 0) {
-                    displayErrorMessage('offerPrice', 'Please enter a valid non-negative offer price.');
-                    isValid = false;
-                }
-        
-                // Check if minimumAmount is a non-negative number
-                if (!/^\d+(\.\d{1,2})?$/.test(minimumAmount) || parseFloat(minimumAmount) < 0) {
-                    displayErrorMessage('minimumAmount', 'Please enter a valid non-negative minimum amount.');
-                    isValid = false;
-                }
-        
-                
-                return isValid; // Form is valid
-            }
-        
-            function displayErrorMessage(fieldName, message) {
-                const field = document.getElementsByName(fieldName)[0];
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.innerText = message;
-                field.parentNode.appendChild(errorDiv);
-            }
-        
-            function clearErrorMessages() {
-                const errorMessages = document.querySelectorAll('.error-message');
-                errorMessages.forEach((errorMessage) => {
-                    errorMessage.parentNode.removeChild(errorMessage);
-                });
-            }
+          
+const addcoupon = document.getElementById('editcoupon');
+addcoupon.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Reset any existing error messages
+    clearErrorMessages();
+
+    const name = document.getElementsByName('name')[0].value;
+    const description = document.getElementById('product_Description');
+    const offerPrice = document.getElementsByName('offerPrice')[0].value;
+    const minimumAmount = document.getElementsByName('minimumAmount')[0].value;
+    const expiryDate = document.getElementsByName('expiryDate')[0].value;
+
+    let isValid = true; // Assume the form is valid by default
+
+    // Check if name is empty
+    if (name.trim() === '') {
+        displayErrorMessage('name', 'Please enter a coupon name.');
+        isValid = false;
+    }
+
+    // Check if description is empty
+    if (description.value.trim() === '') {
+        displayErrorMessage('description', 'Please enter a description.');
+        isValid = false;
+    }
+
+    // Check if offerPrice is a non-negative number
+    if (!/^\d+(\.\d{1,2})?$/.test(offerPrice) || parseFloat(offerPrice) < 0) {
+        displayErrorMessage('offerPrice', 'Please enter a valid non-negative offer price.');
+        isValid = false;
+    }
+
+    // Check if minimumAmount is a non-negative number
+    if (!/^\d+(\.\d{1,2})?$/.test(minimumAmount) || parseFloat(minimumAmount) < 0) {
+        displayErrorMessage('minimumAmount', 'Please enter a valid non-negative minimum amount.');
+        isValid = false;
+    }
+
+    // Check if expiryDate is empty
+    if (expiryDate.trim() === '') {
+        displayErrorMessage('expiryDate', 'Please select an expiry date.');
+        isValid = false;
+    }
+
+    // If all validations pass, submit the form
+    if (isValid) {
+        addcoupon.submit();
+    }
+});
+
+// Rest of your code remains unchanged
+function displayErrorMessage(fieldName, message) {
+    document.getElementById('error').innerHTML = '<span style="color: red;">' + message + '</span>';
+}
+
+function clearErrorMessages() {
+    document.getElementById('error').innerHTML = ''; // Clear the error messages
+}
+
         </script>
         
         <%- include('footer') %>

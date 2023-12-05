@@ -6,6 +6,7 @@ const {Category}=require('../models/schemas')
 const {Order}=require('../models/schemas')
 const sharp=require('sharp')
 const PDFDocument=require('pdfkit')
+const Excel= require('excel4node')
 
 
 const loadLogin = async(req,res)=>{
@@ -54,8 +55,9 @@ const loadLogin = async(req,res)=>{
         const orderCount= await Order.find({}).count()
         const productCount= await Product.find({}).count()
         const users=await User.find({}).sort({ _id: -1 }).limit(3)
-        const order=await Order.find({}).sort({_id:-1}).limit(10).populate('user')
+        const order=await Order.find({}).sort({_id:-1}).limit(8).populate('user')
         const products=  await Product.find()
+        const category=await Category.find().count()
 
 
         const aggregationResult = await Order.aggregate([
@@ -139,7 +141,7 @@ const loadLogin = async(req,res)=>{
 
     const totalRevenue = aggregationResult.length > 0 ? aggregationResult[0].totalPrice : 0;
 
-        res.render('admin/dashboard',{orderCount,productCount,users,order,totalRevenue,monthlySalesArray,productsPerMonth,orderStatusArray})
+        res.render('admin/dashboard',{orderCount,productCount,users,order,totalRevenue,monthlySalesArray,productsPerMonth,orderStatusArray,category})
     } catch (error) {
         console.log(error.message);
         res.render('users/page-404')
@@ -577,10 +579,43 @@ const salesReport= async (req,res)=>{
             // Pipe the PDF content to the response stream
             doc.pipe(res);
             doc.end();
+           } else if (req.query.downloadExcel) {
+                // Generate Excel sheet
+                const wb = new Excel.Workbook();
+                const ws = wb.addWorksheet('Sales Report');
+          
+                // Add header row
+                ws.cell(1, 1).string('Order ID');
+                ws.cell(1, 2).string('Customer Name');
+                ws.cell(1, 3).string('Price');
+                ws.cell(1, 4).string('Status');
+                ws.cell(1, 5).string('Date');
+          
+                // Add data rows
+                let rowIndex = 2;
+                orders.forEach((order) => {
+                  ws.cell(rowIndex, 1).string(`ORD${String(order._id.toString().slice(-4)).padStart(5, '0')}`);
+                  ws.cell(rowIndex, 2).string(order.user ? order.user.name : 'N/A');
+                  ws.cell(rowIndex, 3).number(order.grandTotal);
+                  ws.cell(rowIndex, 4).string(order.status);
+                  ws.cell(rowIndex, 5).string(order.createdAt ? order.createdAt.toLocaleDateString() : 'N/A');
+                  rowIndex++;
+                });
+          
+                // Set response headers for Excel download
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', 'attachment; filename="sales_report.xlsx"');
+          
+                // Pipe the Excel content to the response stream
+                wb.writeToBuffer().then((buffer) => {
+                  res.end(buffer);
+                });
           } else{
             res.render('admin/salesreport',{orders:currentproduct,totalpages,currentpage})
 
           }
+
+          
 
 
 

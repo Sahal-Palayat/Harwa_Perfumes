@@ -1,0 +1,223 @@
+<%-include('header') %>
+<div class="container mt-4 mb-4">
+    <% orders.forEach(order => { %>
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                Order Details
+            </div>
+            <div class="card-body bg-light">
+                <div class="mb-4">
+                    <h5>Order Status: <span class="text-success"><%= order.status %></span></h5>
+                    <h6>Ordered Products:</h6>
+                    <ul class="list-group">
+                        <% order.products.forEach(product => { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="<%= product.product.coverimage %>" alt="<%= product.product.name %>" class="mr-3" style="max-width: 50px; max-height: 50px;">
+                                    <div>
+                                        <%= product.product.name %> - Quantity: <%= product.quantity %> - Price: ₹<%= product.product.offerPrice %>
+                                    </div>
+                                </div>
+                                <!-- Button to cancel the item -->
+                                <% if (order.status !== "Cancelled" && order.status !== "Delivered" && order.products.length > 1) { %>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="cancelItem('<%= order._id %>', '<%= product._id %>')">Cancel Item</button>
+                                <% } %>
+                                
+                            </li>
+                        <% }); %>
+                    </ul>
+                    <p class="mt-2">Order Date: <%= order.createdAt.toDateString() %></p>
+                    <!-- Button to cancel the entire order -->
+                    <% if (order.status !== "Cancelled" && order.status !== "Delivered") { %>
+
+
+                        <button type="button" class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+    
+<% if (totalpages) { %>
+    <div class="pagination">
+    <% if (currentpage > 1) { %>
+    <button class=""><a href="?page=<%= currentpage - 1 %>">Previous</a></button>
+    <% } %>
+    
+    <% for (let i = 1; i <= totalpages; i++) { %> <!-- Change the loop to start from 1 and go up to totalpages -->
+    <button class=""><a href="?page=<%= i %>" class="<%= i === currentpage ? 'active' : '' %>"><%= i %></a></button>
+    <% } %>
+    
+    <% if (currentpage < totalpages) { %>
+    <button class=""><a href="?page=<%= currentpage + 1 %>">Next</a></button>
+    <% } %>
+    </div>
+    <% } %>
+  </div>
+  
+  
+  
+  
+  <!-- Add this script to your HTML file, after including SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  
+  <script>
+    const cancelItem = async (orderId, productId) => {
+        alert(orderId)
+        alert(productId)
+        // Display SweetAlert confirmation
+        const confirmResult = await Swal.fire({
+            icon: 'question',
+            title: 'Confirm Item Cancellation',
+            text: 'Are you sure you want to cancel this item?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+        });
+  
+        if (confirmResult.isConfirmed) {
+            try {
+                const response = await fetch(`/cancelItem/${orderId}/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+  
+                if (response.ok) {
+                    // Display SweetAlert success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Item Cancelled',
+                        text: 'The item has been cancelled successfully.',
+                    }).then(() => {
+                        // Reload the page or perform any other action
+                        location.reload();
+                    });
+                } else {
+                    // Handle error
+                    console.error('Error cancelling item:', response.statusText);
+                    // Display SweetAlert error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while cancelling the item.',
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    };
+  </script>
+
+<script>
+    function cancelOrder(orderId) {
+        // Display a confirmation popup using SweetAlert
+        Swal.fire({
+            title: 'Cancel Order',
+            text: 'Are you sure you want to cancel this order?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user clicks 'Yes', proceed to cancel the order
+                const status = document.getElementById("statusChange");
+                const button = document.getElementById("btnChange");
+
+
+                location.reload();
+
+                // Make a request to the server to cancel the order
+                fetch(`/cancelOrder/${orderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+
+                        // Optionally, update the UI to reflect the cancelled status
+                        status.innerHTML = "Cancelled";
+                        button.style.display = "none";
+
+                        // Redirect to the orders page
+                        // window.location.href = "/orders";
+                      
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling order:', error);
+                        // Handle errors as needed
+                    });
+            }
+        });
+    }
+</script>
+
+
+<script>
+      function changeStatus(orderId) {
+            const cancelReason = document.getElementById('cancelReason').value;
+            
+            
+           
+            $('#cancelModal').modal('hide');
+            // const selectedStatus = document.getElementById('status').value;
+          
+            // alert(selectedStatus)
+           
+
+                fetch('/cancelStatus', {
+                    method: 'post',
+                    headers: {
+                    'Content-Type': 'application/json',
+                },
+                    body: JSON.stringify({ orderId: orderId, reason:cancelReason }),
+                })
+                    .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                    });
+                                    
+                                }
+
+
+
+
+
+            function conformReturn(id, orderId) {
+    alert(id);
+    alert(orderId);
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Once returned, you will not be able to recover this product!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            Swal.fire({
+                title: "Poof! Your imaginary file has been deleted!",
+                icon: "success",
+            });
+            location.href = `/return?id=${id}&orderId=${orderId}`;
+        } else {
+            Swal.fire({
+                title: "Return Canceled",
+                icon: "error",
+                timer: 1000,
+                showConfirmButton: false,
+            });
+        }
+    });
+}
+</script>
+  <%-include('footer')  %>

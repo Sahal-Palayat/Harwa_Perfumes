@@ -25,7 +25,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" name="description" class="form-control" rows="4"></textarea>
+                                    <textarea placeholder="Type here" name="description" id="description" class="form-control" rows="4"></textarea>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product title</label>
@@ -68,6 +68,7 @@
               clearErrorMessages();
           
               const title = document.getElementById('title').value;
+              const description=document.getElementById('description').value
               const link = document.getElementById('link').value;
           
               let isValid = true;

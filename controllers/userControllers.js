@@ -184,6 +184,7 @@ const loadMain=async (req,res)=>{
   const loadProductDetails= async (req,res)=>{
 
     try {
+      console.log('////////////////////////////////////////////////////////////////////////////////////');
       const userData=await User.findById(req.session.user_id)
     
       const username=userData.name
@@ -576,7 +577,127 @@ const loadCheckout= async(req,res)=>{
       }
       }
  
+      const loadFullOrder=async(req,res)=>{
+        try {
+
+         
+                const userId=req.session.user_id;
+                const user=await User.findById(userId)
+                const orders = await Order.find({ user: userId }).populate('products.product');
+                orders.reverse()
+        
+                const itemsperpage = 3;
+                const currentpage = parseInt(req.query.page) || 1;
+                const startindex = (currentpage - 1) * itemsperpage;
+                const endindex = startindex + itemsperpage;
+                const totalpages = Math.ceil(orders.length / 3);
+                const currentproduct = orders.slice(startindex,endindex);
+              
+            
+                res.render('users/fullOrder', { orders:currentproduct,totalpages,currentpage ,user});
+          
+        } catch (error) {
+          console.log('Error from oderCtrl in the function allOderData', error);
+          res.status(500).json({ status: false, error: 'Server error' });
+        }
+      }
  
+      const cancelItem = async (req, res) => {
+        try {
+
+          const orderId = req.params.orderId;
+          const productId = req.params.productId;
+          console.log(orderId,productId,'////////////////////////////////////////////');
+          // Fetch the order by ID
+          const order = await Order.findById(orderId);
+      
+          if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+          }
+      
+          // Find the index of the product in the order's products array
+          const productIndex = order.products.findIndex(
+            (product) => product._id.toString() === productId
+          );
+      
+          if (productIndex === -1) {
+            return res
+              .status(404)
+              .json({ message: "Product not found in the order" });
+          }
+      
+          // Get the canceled product and update the product stock
+          const canceledProduct = order.products.splice(productIndex, 1)[0];
+          const updatedProduct = await Product.findById(canceledProduct.product);
+      
+          if (updatedProduct) {
+            updatedProduct.quantity += canceledProduct.quantity;
+            await updatedProduct.save();
+          }
+      
+          // Save the updated order
+          await order.save();
+      
+          res.json({ message: "Item cancelled successfully", order });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
+      };
+
+      const cancelOrder = async (req, res) => {
+        try {
+          const orderId = req.params.orderId;
+          console.log(orderId,'////////////////////////////');
+          const order = await Order.findByIdAndUpdate(
+            orderId,
+            { status: "Cancelled" },
+            { new: true }
+          );
+      
+          if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+          }
+      
+          // Iterate through order items and update product stock
+          for (const item of order.products) {
+            const product = await Product.findById(item.product);
+      
+            if (product) {
+              // Increment the product stock by the canceled quantity
+              product.quantity += item.quantity;
+              await product.save();
+            }
+          }
+      
+          // Respond to the client after the stock update is complete
+          res.json({ message: "Order cancelled successfully", order });
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
+      };
+
+
+      const searchProduct = async (req, res, next) => {
+        try {
+          
+          console.log('//////////');
+          const filter = req.query.q;
+          console.log(filter);
+          if (filter != '') {
+            const regex = new RegExp(filter, "i");
+            const products = await Product.find({ name: { $regex: regex } });
+            console.log(products);
+            if (products) {
+              res.json(products)
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      
+      }
 
 module.exports= {
     loadRegister,
@@ -601,5 +722,9 @@ module.exports= {
     resetPassword,
     getpassword,
     aboutpage,
-    loadShop
+    loadShop,
+    loadFullOrder,
+    cancelItem,
+    cancelOrder,
+    searchProduct
 }

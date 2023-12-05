@@ -14,7 +14,7 @@
                     </select>
                 </div>
                 <button class="btn btn-primary" id="downloadPdf">Download PDF</button>
-                <button class="btn btn-primary" id="filterSales">Filter Sales</button>
+                <!-- <button class="btn btn-primary" id="downloadExcel">Download Excel</button> -->
             </div>
             <div class="row">
                 <div class="col-md-9">
@@ -120,7 +120,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h5 class="mb-3">Filter by</h5>
-                            <form>
+                            <form  >
                                 <div class="mb-4">
                                     <label for="order_id" class="form-label">Order ID</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="order_id">
@@ -254,6 +254,19 @@ document.getElementById('filterOrders').addEventListener('change', function () {
               tableBody.insertAdjacentHTML('beforeend', noDataRow);
           }
       }
+
+
+
+     
+
+
+
+      document.getElementById('downloadExcel').addEventListener('click', function () {
+  const selectedValue = document.getElementById('filterOrders').value;
+  const url = `/salesReport?date=${selectedValue}&downloadExcel=true`;
+  window.location.href = url;
+});
+  
       </script>
       
         <%- include('footer') %>

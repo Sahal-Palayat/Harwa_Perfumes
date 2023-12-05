@@ -15,7 +15,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="user/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="user/assets/css/main.css?v=3.4">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+
     <link rel="stylesheet" href="user/assets/css/profilecard.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 </head>
 
 <body>
@@ -599,11 +603,17 @@
                                                                     <td><%=order.grandTotal  %></td>
                                                                     <% if(order.status==='Cancelled'){ %>
                                                                         <td  ><a class="" style="color: red;">Cancelled</a></td>
-                                                                    <%}else if(order.status==='Delivered'){ %>
-                                                                         <td><a class="btn btn-sm font-sm rounded btn-brand" style="color: rgb(96, 89, 89);">Return</a></td>
+                                                                    <%}else if(order.status==='Delivered'){ %>  
+                                                                        <% order.products.forEach(item=>{ %>
+                                                                            <td>  <a onclick="conformReturn('<%= item.product._id %>','<%= order._id %>')" class="btn btn-sm font-sm rounded btn-brand">Return</a></td>
+                                  
+                                                                       <% }) %>                                  
+                                                                        
                                                                    <%}else if(order.status==='Out For Delivery'){ %>
                                                                         <td><a class="btn btn-sm font-sm rounded btn-brand" >Return</a></td>
-                                                                  <% }else if(order.status==='Confirmed','Pending','Shipped'){ %>
+                                                                  <% }else if(order.status==='Returned'){ %>
+                                                                            <td  ><a class="" style="color: red;">Ruturned</a></td>
+                                                                 <%  }else if(order.status==='Confirmed','Pending','Shipped'){ %>
                                                                         <td>    <a class="btn btn-sm font-sm rounded btn-brand" style="color:white; background: red;" data-bs-toggle="modal" name="status" id="status" data-bs-target="#cancelModal">Cancel</a></td>
                                                                         <!-- Modal -->
                                                                             <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
@@ -910,6 +920,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="user/assets/js/razorpay.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <script>
      
 
@@ -943,9 +955,37 @@
 
 
 
-       
-    </script>
-    
+            function conformReturn(id, orderId) {
+    alert(id);
+    alert(orderId);
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Once returned, you will not be able to recover this product!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            Swal.fire({
+                title: "Poof! Your imaginary file has been deleted!",
+                icon: "success",
+            });
+            location.href = `/return?id=${id}&orderId=${orderId}`;
+        } else {
+            Swal.fire({
+                title: "Return Canceled",
+                icon: "error",
+                timer: 1000,
+                showConfirmButton: false,
+            });
+        }
+    });
+}
+
+        </script>
+        
 </body>
 
 </html>

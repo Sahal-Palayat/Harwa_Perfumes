@@ -192,11 +192,63 @@ const dltAllItem = async (req, res) => {
     }
   }
 
+  const cartQuantityInc = async (req, res) => {
+    try {
+      const userId = req.session.user_id;
+      let cart = await Cart.findOne({ user: userId });
+  
+      const itemIndex = cart.items.findIndex(
+        (item) => item.product.toString() === req.params.id
+      );
+  
+      const product = await Product.findById(req.params.id);
+  
+      if (cart.items[itemIndex].quantity + 1 <= product.quantity) {
+        cart.items[itemIndex].quantity += 1;
+  
+        await cart.save();
+  
+        res.redirect("/cartpage");
+      } else {
+        res.redirect("/cartpage");
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Internal Server Error");
+    }
+  };
+  
+  const cartQuantityDec = async (req, res) => {
+    try {
+      const userId = req.session.user_id;
+      let cart = await Cart.findOne({ user: userId });
+      const itemIndex = cart.items.findIndex(
+        (item) => item.product.toString() === req.params.id
+      );
+  
+      if (cart.items[itemIndex].quantity === 1) {
+        cart.items[itemIndex].quantity = 1;
+  
+        res.redirect("/cartpage");
+        return;
+      }
+      cart.items[itemIndex].quantity -= 1;
+  
+      await cart.save();
+  
+      res.redirect("/cartpage");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 module.exports = {
     LoadCart,
     addToCart,
     deleteItemCart,
     dltAllItem,
     incCartItem,
-    selectProduct
+    selectProduct,
+    cartQuantityInc,
+    cartQuantityDec
 }

@@ -47,12 +47,15 @@ userRouter.get('/addToCart',auth.isLogin,cartController.addToCart)
 userRouter.post('/updateCart',auth.isLogin,cartController.incCartItem)
 userRouter.post('/deleteItem',auth.isLogin,cartController.deleteItemCart)
 userRouter.get('/dltAllItem',auth.isLogin,cartController.dltAllItem)
+userRouter.get("/updateQuantity/:id",auth.isLogin,cartController.cartQuantityInc);
+userRouter.get("/updateQuantityDec/:id",auth.isLogin,cartController.cartQuantityDec);
 
 userRouter.get('/checkout',auth.isLogin,userController.loadCheckout)
 userRouter.post('/selectProduct',auth.isLogin,cartController.selectProduct)
 
 userRouter.post('/placeOrder',auth.isLogin,orderController.placeOrder)
 userRouter.get('/orderView',auth.isLogin,orderController.loadOrderView)
+userRouter.get('/return',auth.isLogin,orderController.returnOrder)
 
 
 userRouter.get('/invoice',auth.isLogin,orderController.invoice)
@@ -60,6 +63,8 @@ userRouter.get('/invoiceDownload',auth.isLogin,orderController.invoiceDownload)
 
 
 userRouter.post('/cancelStatus',auth.isLogin,orderController.cancelStatus)
+userRouter.delete("/cancelItem/:orderId/:productId", userController.cancelItem);
+userRouter.post("/cancelOrder/:orderId",auth.isLogin,userController.cancelOrder);
 userRouter.get ('/resetPassword',userController.resetPassword)
 userRouter.post ('/resetPassword',userController.getpassword)
 userRouter.get('/forgotPass',auth.isLogin,userController.forgotpass)
@@ -73,8 +78,10 @@ userRouter.post('/validationCoupon',auth.isLogin,couponController.validateCoupon
 userRouter.get('/shop',auth.isLogin,userController.loadShop)
 userRouter.get('/about',auth.isLogin,userController.aboutpage)
 
+userRouter.get('/fullOrder',auth.isLogin,userController.loadFullOrder)
 
 
+userRouter.get('/searchProduct',auth.isLogin,userController.searchProduct)
 
 
 

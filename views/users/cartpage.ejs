@@ -214,10 +214,27 @@
                                                      -->
 
 
-                                                    <a class="incrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-up"></i></a>
+
+
+                                                     <td class="align-middle">
+                                                        <div class="input-group quantity-control d-flex justify-content-center">
+                                                            <a href="/updateQuantityDec/<%= products.product._id %>">
+                                                                <button class="btn btn-outline-secondary" type="button"  class="decrementBtn" data-product-id="<%= products.id%>">-</button>
+                                                            </a>
+                                                            <span class="input-group-text quantity-value"><%=products.quantity %></span>
+                                                            <a href="/updateQuantity/<%= products.product._id %>">
+                                                                <button class="btn btn-outline-secondary" type="button"  class="incrementBtn" data-product-id="<%= products.id%>">+</button>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+
+
+
+
+                                                    <!-- <a class="incrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-up"></i></a>
                                                     <span><input style="width: 3rem;" class="quantityBtn" style="width: 20px;" type="text" value="<%= products.quantity %>"></span>
                                                     
-                                                    <a class="decrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-down"></i></a>
+                                                    <a class="decrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-down"></i></a> -->
                                                 </div>
                                             </td>
                                             <td class="text-right" data-title="Cart">   
