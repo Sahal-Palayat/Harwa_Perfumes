@@ -56,6 +56,8 @@ adminRouter.get('/editproduct',auth.isLogin,adminController.loadEditProducts)
 adminRouter.post('/editproduct',auth.isLogin,upload.fields([{name:'images'}]),adminController.editProducts)
 adminRouter.get('/listproducts/unblock',auth.isLogin,adminController.productUnlist)
 adminRouter.get('/listproducts/block',auth.isLogin,adminController.productList)
+adminRouter.get('/deleteSingleImage',auth.isLogin,adminController.deleteSingleImage)
+
 //-------------------------------------
 
 //---------------order---------------
@@ -69,6 +71,7 @@ adminRouter.post('/updateStatus',auth.isLogin,orderController.updateStatus)
 adminRouter.get('/loadSalesReport',auth.isLogin,adminController.loadSalesReport)
 adminRouter.get('/salesReport',auth.isLogin,adminController.salesReport)
 adminRouter.get('/dowmloadPdf',auth.isLogin,adminController.downloadPdf)
+adminRouter.get("/sales", auth.isLogin, adminController.sales);
 //------------------------------
 
 

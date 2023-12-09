@@ -65,6 +65,20 @@
                             <div>
                                 <label class="form-label">Images</label>
                                 <input name="images" class="form-control" value="<%-products.images %>" type="file" multiple >
+
+                                <!-- <% products.images.forEach(image=>{ %>
+                                <img id="imageshow" src="<%- image %>" alt="Product Image" style="width: 12rem;height: 12rem;" >
+                                <% }); %> -->
+
+                                <% products.images.forEach(image=>{ %>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <div class="col-12"> <td> <img class="rounded"  style="width: 12rem; height: 12rem;" src="<%= image %>" alt="image"></td></div>
+                                            <td><a href="/deleteSingleImage?img=<%= image %>&id=<%=products._id %>"><span class="badge rounded-pill alert-danger">Delete</span></a></td>
+                                        </div>
+                                       
+                                    </div> <!-- col.// -->
+                                    <% }); %>
                             </div>
                         </div>
                     </div> <!-- card end// -->

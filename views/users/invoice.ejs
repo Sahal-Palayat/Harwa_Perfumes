@@ -39,7 +39,7 @@
                                                     <div class="intro">
                                                         Hi <strong><%= address.name %></strong>,
                                                         <br>
-                                                        This is the receipt for a payment of <strong>$<%= order.totalPrice %></strong> (USD) for your works
+                                                        This is the receipt for a payment of <strong> <%= order.grandTotal %></strong> (USD) for your works
                                                     </div>
                         
                                                     <div class="payment-info">
@@ -103,13 +103,13 @@
                                                             <div class="items">
                                                                 <div class="row item">
                                                                     <div class="col-md-4 desc">
-                                                                        <%= order.products[i].title %>     ,
+                                                                        <%= order.products[i].name %>     ,
                                                                     </div>
                                                                     <div class="col-md-3 qty">
                                                                         <%= order.products[i].quantity %>
                                                                     </div>
                                                                     <div class="col-md-5 amount text-end">
-                                                                        ₹ <%= order.products[i].price %>
+                                                                        ₹ <%= order.grandTotal %>
 
                                                                     </div>
                                                                 </div>

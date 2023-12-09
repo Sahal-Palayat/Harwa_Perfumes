@@ -2,20 +2,21 @@ let addressId = '';
 let payment = '';
 
 function selectAddress(id) {
-
   addressId = id;
-
 }
-const grandTotal = document.getElementById('grandTotal').value
+
+
+
+const grandTotal = document.getElementById( 'grandTotal').value
+
+
 
 function selectPaymentMethod(paymentmethod) {
-
   payment = paymentmethod;
 }
 
 function confirmorder() {
   try {
-  
     Swal.fire({ 
       title: 'Confirm your order?',
       text: "You can cancel later !",
@@ -183,4 +184,99 @@ function addWallet() {
 
 }
 
+
+
+
+function applyCoupon() {
+  console.log('entered to apply coupon in script');
+  
+  Swal.fire({
+    text: 'Apply your coupon code here !!!',
+    input: 'text',  // 'input' instead of 'content'
+    showCancelButton: true,
+    confirmButtonText: 'Apply!',
+    cancelButtonText: 'Cancel',
+    allowOutsideClick: false,
+  })
+  .then((result) => {
+    if (result.isConfirmed) {
+      const couponCode = result.value;
+      if (!couponCode) {
+        throw null; // No coupon code provided, so exit without making an AJAX request
+      }
+
+      // Perform an AJAX request here with the couponCode
+      fetch('/validationCoupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponCode }), // Send the couponCode in the request body
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.isValid) {
+         alert(data.coupon.offerPrice)
+          const displayedSum = document.getElementById('grandTotal').value;
+          console.log(displayedSum,'displayedSum');
+          const numericValue = parseFloat(displayedSum.replace(/[^\d.]/g, ''));
+          console.log(numericValue,'numericValue');
+          const couponOfferPrice = parseFloat(data.coupon.offerPrice);
+          console.log(couponOfferPrice,'couponOfferPrice');
+          const newSum = numericValue - couponOfferPrice;
+            
+          console.log(newSum,'newSum, numericValue - couponOfferPrice');
+          // Update the displayedSum value on the webpage
+          const displayedSumElement = document.getElementById('Billtotal'); // Get the DOM element
+          console.log(displayedSumElement.value);
+          displayedSumElement.innerText = '₹' + newSum.toFixed(2); // Update the value property
+
+          console.log(displayedSumElement.value);
+          Swal.fire('Coupon Valid!', `Coupon code '${couponCode}' is valid.`);
+        } else {
+          Swal.fire('Invalid Coupon', `Coupon code '${couponCode}' is not valid.`);
+        }
+      })        
+      .catch(error => {
+        console.error('Error occurred during AJAX request:', error);
+        Swal.fire('Error', 'An error occurred while processing your request.', 'error');
+      });
+    }
+  })
+  .catch((error) => {
+    if (error) {
+      Swal.fire('Oh noes!', 'An error occurred!', 'error');
+    } else {
+      Swal.close();
+    }
+  });
+  }
+
+
+
+
+ document.addEventListener("DOMContentLoaded", function () {
+  const copyButtons = document.querySelectorAll(".btn-copy");
+  copyButtons.forEach(copyButton => {
+      copyButton.addEventListener("click", function () {
+          const couponName = this.getAttribute("data-coupon-name");
+          copyToClipboard(couponName);
+          updateCopyButton(this); // Update the clicked copy button's appearance
+      });
+  });
+});
+
+function updateCopyButton(button) {
+  button.textContent = 'Copied';
+  button.disabled = true; 
+}
+
+async function copyToClipboard(text) {
+  try {
+      await navigator.clipboard.writeText(text);
+      console.log('Text copied to clipboard:', text);
+  } catch (error) {
+      console.error("Failed to copy:", error);
+  }
+}
 

@@ -16,8 +16,7 @@ const loadLogin = async(req,res)=>{
        
     } catch (error) {
        console.log(error.message);
-       res.render('users/page-404')
-
+       res.status(500).render('users/page-500', { error });
     }
  }
  
@@ -45,8 +44,7 @@ const loadLogin = async(req,res)=>{
          }
     } catch (error) {
         console.log(error.message);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
  }   
 
@@ -55,7 +53,7 @@ const loadLogin = async(req,res)=>{
         const orderCount= await Order.find({}).count()
         const productCount= await Product.find({}).count()
         const users=await User.find({}).sort({ _id: -1 }).limit(3)
-        const order=await Order.find({}).sort({_id:-1}).limit(8).populate('user')
+        const order=await Order.find({}).sort({_id:-1}).limit(6).populate('user')
         const products=  await Product.find()
         const category=await Category.find().count()
 
@@ -155,8 +153,7 @@ const loadLogin = async(req,res)=>{
         res.render('admin/userslist',{users:userData})
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
  }
 
@@ -167,8 +164,7 @@ const loadLogin = async(req,res)=>{
           res.render('admin/userslist',{users:usersData});
     } catch (error) {
        console.log(error)
-       res.render('users/page-404')
-
+       res.status(500).render('users/page-500', { error });
     }
  }
  
@@ -186,8 +182,7 @@ const loadLogin = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
  }
 
@@ -203,8 +198,7 @@ const loadLogin = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
  }
 
@@ -216,8 +210,7 @@ const loadLogin = async(req,res)=>{
         
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
  }
   
@@ -225,7 +218,10 @@ const loadLogin = async(req,res)=>{
     try {
        
         const {name,description}=req.body
-        const checkData=await Category.findOne({name:name})
+        const NameRegex = new RegExp(name, "i");
+    
+        const checkData = await Category.findOne({ name: { $regex: NameRegex } });
+    
         if(checkData){
             const data=await Category.find({})
             res.render('admin/categorylist',{errMessage:'Category already found',categories:data})
@@ -245,8 +241,7 @@ const loadLogin = async(req,res)=>{
 
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
  }   
  
@@ -262,8 +257,7 @@ const blockCategory=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -279,8 +273,7 @@ const unBlockCategory=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 const loadEditCategory=async (req,res)=>{
@@ -291,8 +284,7 @@ const loadEditCategory=async (req,res)=>{
         res.render('admin/editcategory',{category:category})
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -305,8 +297,7 @@ const editCategory=async (req,res)=>{
         res.redirect('/category')
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -330,8 +321,7 @@ const listProducts=async (req,res)=>{
 
     } catch (error) {
         console.log(error); 
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 
 }
@@ -373,8 +363,7 @@ const productadding=async (req,res)=>{
 
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }  
 
@@ -387,8 +376,7 @@ const loadEditProducts=async (req,res)=>{
         res.render('admin/editproducts',{products})
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 
 }
@@ -412,10 +400,35 @@ const editProducts=async (req,res)=>{
 
     } catch (error) {
         console.log(error)
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
+
+//----------------------dete a single picture -------------------
+const deleteSingleImage = async (req, res) => {
+    try {
+      console.log(req.query);
+      const id = req.query.id;
+      const imageToDelete = req.query.img;
+  
+      // Update the product in the database to remove the image reference
+      const product = await Product.findByIdAndUpdate(id, {
+        $pull: { images: imageToDelete }
+      });
+  
+      // Delete the image file from the filesystem
+    //   const imagePath = path.join('public', 'admin', 'assets', 'imgs', 'catogary', imageToDelete);
+    //   await unlinkAsync(imagePath);
+  
+      console.log('Deleted image:', imageToDelete);
+  
+      res.redirect(`/editProduct?id=${product._id}`);
+    } catch (error) {
+      console.log('Error occurred in categoryController deleteSingleImage function', error);
+     
+    }
+  }
+  //---
 
 const productList=async (req,res)=>{
     try {
@@ -428,8 +441,7 @@ const productList=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -445,8 +457,7 @@ const   productUnlist=async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -468,18 +479,38 @@ const loadSalesReport=async (req,res)=>{
         
     } catch (error) {
         console.log(error);
+        res.status(500).render('users/page-500', { error });
     }
 }
 
-
+const sales = async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+  
+      // Perform a MongoDB query to get sales data within the specified date range
+      const filteredSales = await Order.find({
+        createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        status: "Delivered", // Add this condition to filter by status
+      }).populate('user');
+  
+      console.log(filteredSales + "/////");
+      res.json(filteredSales);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
 
 const salesReport= async (req,res)=>{
 
     try {
-        const date = req.query.date;
+        const {date,startDate,endDate} = req.query;
         let orders;
 
         const currentDate = new Date();
+        function getFirstDayOfMonth(date) {
+            return new Date(date.getFullYear(), date.getMonth(), 1);
+          }
 
         // Helper function to get the first day of the current month
         function getFirstDayOfMonth(date) {
@@ -543,6 +574,15 @@ const salesReport= async (req,res)=>{
                 }).populate('user');
                
                 break;
+                case "custom":
+                    orders = await Order.find({
+                      status: "Delivered",
+                      createdAt: {
+                        $gte: new Date(startDate),
+                        $lt: new Date(endDate),
+                      },
+                    }).populate("user");
+                    break;
             default:
                 // Fetch all orders
                 orders = await Order.find({ status: 'Delivered' }).populate('user');
@@ -611,7 +651,7 @@ const salesReport= async (req,res)=>{
                   res.end(buffer);
                 });
           } else{
-            res.render('admin/salesreport',{orders:currentproduct,totalpages,currentpage})
+            res.render('admin/salesreport',{orders:currentproduct,totalpages,currentpage,startDate,endDate})
 
           }
 
@@ -624,8 +664,7 @@ const salesReport= async (req,res)=>{
     } catch (error) {
         console.log('Error occurred in salesReport route:', error);
         // Handle errors and send an appropriate response
-        res.status(500).json({ error: 'An error occurred' });
-    }
+        res.status(500).render('users/page-500', { error });    }
 }
 
 
@@ -649,8 +688,7 @@ const downloadPdf = async (req, res) => {
   
     } catch (error) {
         console.log('Error occurred in downloadPdf route:', error);
-        res.status(500).json({ error: 'An error occurred' });
-    }
+        res.status(500).render('users/page-500', { error });    }
   };
 
 //-----------offer---------------------------------------------------------------------------------
@@ -673,6 +711,7 @@ const loadProductOffer=async (req,res)=>{
         res.render('admin/productOffer',{product: currentproduct, totalpages, currentpage})
     } catch (error) {
         console.log('Error happence in the offerctrl in the funtion productOfferpage ')
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -702,6 +741,7 @@ const updateProductOffer= async(req,res)=>{
 
     }catch(error){
         console.log(error,'error');
+        res.status(500).render('users/page-500', { error });
     }
 }
 //-------------------------------------------------------------------------------------------
@@ -709,7 +749,6 @@ const updateProductOffer= async(req,res)=>{
 const loadCategoryOffer= async(req,res)=>{
     try {
         const catogary=await Category.find()
-
 
         const itemsperpage = 8;
         const currentpage = parseInt(req.query.page) || 1;
@@ -722,7 +761,7 @@ const loadCategoryOffer= async(req,res)=>{
         
     } catch (error) {
         console.log('Error happened in the offerctrl in the function catogaryOffer:', error);
-        
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -758,8 +797,7 @@ const updateCategoryOffer = async (req, res) => {
     } catch (error) {
         console.log('Error happened in the offerctrl in the function updateCatogaryOffer:', error);
         // Handle the error appropriately, e.g., send an error response to the client
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+        res.status(500).render('users/page-500', { error });    }
 }
 //----------------------------------------------
 
@@ -783,9 +821,11 @@ const updateCategoryOffer = async (req, res) => {
     productUnlist,
     loadEditCategory,
     editCategory,
+    deleteSingleImage,
     searchUser,
     loadSalesReport,
     salesReport,
+    sales,
     loadProductOffer,
     updateProductOffer,
     loadCategoryOffer,

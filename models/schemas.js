@@ -63,7 +63,35 @@ const userModel=new mongoose.Schema({
     wallet:{
         type:Number,
         default:0
-    }
+    },
+    history: {
+        type:Array,
+        amount: {
+            type: Number,
+            required: true
+        },
+        status: {
+            type: String,
+            required: true
+        },
+        reason:{
+            type:String,
+        
+        },
+        timestamp: {
+            type: Date,
+            default:Date.now,
+            
+        }
+    },
+    wishlist:{
+        type:Array,
+        ProductId:{
+            type:mongoose.Schema.Types.ObjectId,
+            required:true,
+            ref:"Product"
+        },
+    },
    
 })
 

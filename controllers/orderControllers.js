@@ -22,7 +22,7 @@ const placeOrder = async (req, res) => {
     const paymentMethod = req.body.payment;  
     const userId = req.session.user_id;
     const grandTotal=req.body.grandTotal;
-  
+    const user= await User.findById(userId);
 
    
   //------------------COD-------------------------
@@ -134,6 +134,22 @@ const placeOrder = async (req, res) => {
                 
                 }
 
+                const transaction = {
+                  amount: grandTotal,
+                  status: "debit",
+                  reason:'Purchase Using Wallet',
+                  timestamp: new Date(), // You can add a timestamp to the transaction
+              };
+          
+              // Push the transaction into the user's history array
+              user.history.push(transaction);
+  
+            
+  
+             
+               await user.save();
+      
+
 
             const insertOrder = await Order.insertMany(orderData);
             userWallet.wallet -= grandTotal;
@@ -234,11 +250,24 @@ const placeOrder = async (req, res) => {
         const amount =req.body.amount/100
         console.log(amount);
         console.log(userId);
-        const updatewallet = await User.findByIdAndUpdate(
-            { _id: userId },
-            { $inc: { wallet: amount } }
-          );
-            
+        // const updatewallet = await User.findByIdAndUpdate(
+        //     { _id: userId },
+        //     { $inc: { wallet: amount } }
+        //   );
+          const updatewallet = await User.findByIdAndUpdate(userId, {
+            $inc:{"wallet" : amount},
+            $push:{
+             "history":{
+                 amount:amount,
+                 status:"credit",
+                 reason:'Add Cash to Wallet',
+                 timestamp:Date.now()
+                 
+             }
+            }
+             
+         }, { new: true });
+ 
         if(updatewallet){
             res.status(200).json({})
         }
@@ -297,7 +326,7 @@ const cancelStatus=async (req,res)=>{
 const loadOrderList=async (req,res)=>{
     try {
         const order= await Order.find({}).populate('user')
-
+        order.reverse()
 
         const itemsperpage = 6;
         const currentpage = parseInt(req.query.page) || 1;
@@ -494,6 +523,15 @@ const returnOrder = async (req, res) => {
       wallet= user.wallet
         // amount: user.wallet ,
        
+      const transaction = {
+        amount: order.grandTotal ,
+        status: "credit",
+        reason:'Order Returned',
+        timestamp: new Date(), // You can add a timestamp to the transaction
+    };
+    
+    user.history.push(transaction);
+      await user.save();
     
     
    

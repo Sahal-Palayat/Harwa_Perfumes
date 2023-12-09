@@ -19,8 +19,7 @@ const LoadCart = async (req, res) => {
         res.render("users/cartpage", { cart:cart,user:user });
        } catch (error) {
          console.error(error);
-         res.render('users/page-404')
-
+         res.status(500).render('users/page-500', { error });
        }
     };
   
@@ -70,8 +69,7 @@ const addToCart = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -98,8 +96,7 @@ const deleteItemCart = async (req, res) => {
         }
     } catch (error) {
         console.log(error, 'error while deleting cart item');
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 };
 
@@ -118,8 +115,7 @@ const dltAllItem = async (req, res) => {
 
     } catch (error) {
         console.log(error, 'error occur while Dlt all elements in the cart');
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -160,8 +156,7 @@ const dltAllItem = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
 
     }
   };
@@ -187,8 +182,7 @@ const dltAllItem = async (req, res) => {
         console.log();
     } catch (error) {
         console.log(error);
-        res.render('users/page-404')
-
+        res.status(500).render('users/page-500', { error });
     }
   }
 
@@ -214,8 +208,7 @@ const dltAllItem = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
-      res.status(500).send("Internal Server Error");
-    }
+      res.status(500).render('users/page-500', { error });    }
   };
   
   const cartQuantityDec = async (req, res) => {
@@ -239,6 +232,7 @@ const dltAllItem = async (req, res) => {
       res.redirect("/cartpage");
     } catch (error) {
       console.log(error);
+      res.status(500).render('users/page-500', { error });
     }
   };
 

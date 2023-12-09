@@ -188,8 +188,9 @@
                                 </thead>
                                 <tbody>
 
-                                    
+                                
                                     <% cart.items.forEach(products => {    %>
+                                        <%   if(products.quantity>0){%>
                                         <tr>
                                             <td>
                                                 <input style="width: 1.5rem;" onclick="selectStatus('<%=products.id %>')" type="checkbox" <%=products.selected? 'checked':'unchecked' %>>
@@ -201,17 +202,8 @@
                                                 </p>
                                             </td>
                                             <td class="price" data-title="Price"><span>₹<%= products.product.offerPrice  %> </span></td>
-                                            <td  class="text-center" data-title="Stock">
-                                                <div  class="detail-qty border radius  m-auto">
-                                                     <!-- <a  id="incBtn"  onclick=" location.href = '/incCart?inc=1&productId=<%= products.product._id %>'" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                   <a class="qty-down" ><i class="fi-rs-angle-small-down"></i></a>
-                                                    <span  id="inputBox" class="qty-val"><%=products.quantity  %></span>
-                                                    <a href="#" id="decBtn" class="qty-up"><i class="fi-rs-angle-small-up"></i></a> -->
-                                                    <!-- <a id="incrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-up"></i></a>
-                                                    <span><input style="width: 3rem;" name="quantity" id="quantityBtn" style="width:20px;" type="text" value="<%= products.quantity %>"></span>
-                                                    
-                                                    <a id="decrementBtn"><i class="fi-rs-angle-small-down"></i></a>
-                                                     -->
+                                            <td><%= products.quantity  %></td>
+                                            
 
 
 
@@ -231,12 +223,6 @@
 
 
 
-                                                    <!-- <a class="incrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-up"></i></a>
-                                                    <span><input style="width: 3rem;" class="quantityBtn" style="width: 20px;" type="text" value="<%= products.quantity %>"></span>
-                                                    
-                                                    <a class="decrementBtn" data-product-id="<%= products.id%>"><i class="fi-rs-angle-small-down"></i></a> -->
-                                                </div>
-                                            </td>
                                             <td class="text-right" data-title="Cart">   
                                                 <span>₹<% let total = 0; %>
                                                    
@@ -254,10 +240,12 @@
                                         </td>
                                             <!-- <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td> -->
                                         </tr>
-
+                                        <% }else{ %>
+                                            <p>cart not found</p>
+                                      <%  } %>
 
                                    <% }) %>
-                                    
+                                  
                                     
                                  
                                     <tr>
@@ -268,74 +256,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="cart-action text-end">
-                            <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
-                            <a class="btn " href="/home"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
-                        </div>
-                        <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
-                        <div class="row mb-50">
-                            <div class="col-lg-6 col-md-12">
-                                <div class="heading_s1 mb-3">
-                                    <h4>Calculate Shipping</h4>
-                                </div>
-                                <p class="mt-15 mb-30">Flat rate: <span class="font-xl text-brand fw-900">5%</span></p>
-                                <form class="field_form shipping_calculator">
-                                    <div class="form-row">
-                                        <div class="form-group col-lg-12">
-                                            <div class="custom_select">
-                                                <select class="form-control select-active">
-                                                    <option value="">Choose a option...</option>
-                                                    <option value="AX">Aland Islands</option>
-                                                    <option value="AF">Afghanistan</option>
-                                                    <option value="AU">Australia</option>
-                                                    <option value="AT">Austria</option>
-                                                    <option value="AZ">Azerbaijan</option>
-                                                    <option value="BS">Bahamas</option>
-                                                    <option value="BH">Bahrain</option>
-                                                    <option value="BD">Bangladesh</option>
-                                                    <option value="BB">Barbados</option>
-                                                    
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-row row">
-                                        <div class="form-group col-lg-6">
-                                            <input required="required" placeholder="State / Country" name="name" type="text">
-                                        </div>
-                                        <div class="form-group col-lg-6">
-                                            <input required="required" placeholder="PostCode / ZIP" name="name" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-lg-12">
-                                            <button class="btn  btn-sm"><i class="fi-rs-shuffle mr-10"></i>Update</button>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="mb-30 mt-50">
-                                    <div class="heading_s1 mb-3">
-                                        <h4>Apply Coupon</h4>
-                                    </div>
-                                    <div class="total-amount">
-                                        <div class="left">
-                                            <div class="coupon">
-                                                <form action="#" target="_blank">
-                                                    <div class="form-row row justify-content-center">
-                                                        <div class="form-group col-lg-6">
-                                                            <input class="font-medium" name="Coupon" placeholder="Enter Your Coupon">
-                                                        </div>
-                                                        <div class="form-group col-lg-6">
-                                                            <button class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-12">
+                        
+                            <div  style="float: right;" class="col-lg-6 col-md-12">
                                 <div class="border p-md-4 p-30 border-radius cart-totals">
                                     <div class="heading_s1 mb-3">
                                         <h4>Cart Totals</h4>
@@ -346,13 +268,18 @@
                                                 <tr>
                                                     <td class="cart_total_label">Cart Subtotal</td>
                                                     <td class="cart_total_amount">
-                                                        ₹<%  total = 0; %>
+                                                        
+                                                         ₹<%  total = 0; %>
                                                         <% cart.items.forEach(products => { %>
+                                                            <% if(products.selected===true){ %>
                                                           <% total += products.product.offerPrice * products.quantity; %>
+                                                          <%  } %>
                                                         <% }); %>
                                                         
                                                         <!-- Display the total -->
                                                         <%= total %>
+                                                   
+                                                       
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -362,14 +289,16 @@
                                                 <tr>
                                                     <td class="cart_total_label">Total</td>
                                                     <td class="cart_total_amount"><strong>      
-                                                        ₹  <%  total = 0; %>
+                                                        ₹<%  total = 0; %>
                                                         <% cart.items.forEach(products => { %>
+                                                            <% if(products.selected===true){ %>
                                                           <% total += products.product.offerPrice * products.quantity; %>
+                                                          <%  } %>
                                                         <% }); %>
                                                         
                                                         <!-- Display the total -->
                                                         <%= total %>
-                                                        
+                                                   
                                                      
                                                     </strong>
                                                 </td>

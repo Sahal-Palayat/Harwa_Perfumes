@@ -185,8 +185,11 @@
                                                 <% } %>
 
 
-                                                
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                  
+                                       <% if (products.quantity > 0) { %>
+                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" onclick="wishList('<%= products._id %>')"><i class="fi-rs-heart"></i></a>
+                                    <% } %>
+                                                <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a> -->
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
                                         </div>
@@ -293,6 +296,32 @@
     });
 }
 
+
+
+
+function wishList(id) {
+      $.ajax({
+        url: `/addToList?id=${id}`,
+        method: "get",
+        success: (response) => {
+          if (response.status) {
+            Swal.fire({
+              title: "ADDED TO WISHLIST",
+              text: "You seleted a Product to the wisslist",
+              icon: "success",
+              timer: 3000,
+            });
+          } else {
+            Swal.fire({
+              title: "ALREADY SELECTED!",
+              text: "You already selected",
+              icon: "error",
+              timer: 3000,
+            });
+          }
+        },
+      });
+    }
     </script>
     
 

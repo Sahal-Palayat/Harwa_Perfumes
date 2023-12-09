@@ -48,7 +48,7 @@
 
                     <a
                       class="animated btn btn-brush btn-brush-3"
-                      href="/api/user/CatogaryFilter?catogary=<%= banner[i].link %>"
+                      href="/CatogaryFilter?catogary=<%= banner[i].link %>"
                       tabindex="0"
                       >Shop Now</a
                     >
@@ -91,14 +91,14 @@
                         </li>
                   
                     </ul>
-                    <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
+                    <a href="/shop" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
                 </div>
                 <!--End nav-tabs-->
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                                
                              <div class="row product-grid-4">
-                                        <%  products.forEach(product=>{  %>
+                                <% products.slice(0, 8).forEach(product => { %>
                                     <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                         <div class="product-cart-wrap mb-30">
                                             <div class="product-img-action-wrap">
@@ -123,7 +123,18 @@
 
                                                 <div class="product-action-1">
                                                     <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                    
+                                                    <% if (product.quantity > 0) { %>
+                                                        <a
+                                                      aria-label="Add To Wishlist"
+                                                      class="action-btn hover-up"
+                                                      onclick="wishList('<%= product._id %>')"
+                                                      ><i class="fi-rs-heart"></i
+                                                    ></a>
+                                                    <% } %>
+
+
+
                                                     <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                                 </div>
                                                 <div class="product-badges product-badges-position product-badges-mrg">
@@ -251,4 +262,31 @@
 }
 
      </script>
+
+<script>
+    function wishList(id) {
+      $.ajax({
+        url: `/addToList?id=${id}`,
+        method: "get",
+        success: (response) => {
+          if (response.status) {
+            Swal.fire({
+              title: "ADDED TO WISHLIST",
+              text: "You seleted a Product to the wisslist",
+              icon: "success",
+              timer: 3000,
+            });
+          } else {
+            Swal.fire({
+              title: "ALREADY SELECTED!",
+              text: "You already selected",
+              icon: "error",
+              timer: 3000,
+            });
+          }
+        },
+      });
+    }
+  </script>
+
 <%- include ('footer')  %>

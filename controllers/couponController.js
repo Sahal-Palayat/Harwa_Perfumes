@@ -9,6 +9,7 @@ const loadCoupon=async (req,res)=>{
         
     } catch (error) {
         console.log('Error happence in the coupon controller in the funtion loadCoupon',error);
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -20,7 +21,24 @@ const addCoupon = async (req, res) => {
         if (!req.body.name || !req.body.description || !req.body.offerPrice) {
             throw new Error('Required fields are missing');
         }
-  
+        
+
+
+        const { name} = req.body;
+    
+        const NameRegex = new RegExp(name, "i");
+    
+        const checkData = await Coupon.findOne({ name: { $regex: NameRegex } });
+    
+        if (checkData) {
+          const errMessage = "Category alredy exists";
+          res.redirect('/addcoupon');
+        }
+
+
+
+
+
         let customExpiryDate = new Date(req.body.expiryDate);
   
         // Check if customExpiryDate is a valid date
@@ -46,6 +64,7 @@ const addCoupon = async (req, res) => {
         res.redirect('/coupon');
     } catch (error) {
         console.log('Error happened in the coupon controller in the function addCoupon', error);
+        res.status(500).render('users/page-500', { error });
     }
   }
 
@@ -68,6 +87,7 @@ const addCoupon = async (req, res) => {
         
     } catch (error) {
         console.log('Error happence in the coupon controller in the funtion coupon',error);
+        res.status(500).render('users/page-500', { error });
         
     }
 }
@@ -88,6 +108,7 @@ const deleteCoupon=async(req,res)=>{
 
     } catch (error) {
         console.log('Error happence in the coupon controller in the funtion deleteCoupon',error);
+        res.status(500).render('users/page-500', { error });
         
     }
 }
@@ -103,6 +124,7 @@ const editCoupon=async(req,res)=>{
         
     } catch (error) {
         console.log('Error happence in the coupon controller in the funtion editCoupon',error);
+        res.status(500).render('users/page-500', { error });
         
     }
 }
@@ -153,6 +175,7 @@ const updateCoupon = async (req, res) => {
       res.redirect('/coupon');
     } catch (error) {
       console.log('Error happened in the coupon controller in the function editCoupon', error);
+      res.status(500).render('users/page-500', { error });
     }
   }
 

@@ -6,7 +6,7 @@
                     <div class="content-header">
                         <h2 class="content-title">Add New Banner</h2>
                         <div>
-                            <form method="post" action="/updateBanner" enctype="multipart/form-data">
+                            <form method="post" action="/updateBanner" enctype="multipart/form-data" onsubmit="return validateForm()">
                            
                                 <button type="submit" class="btn btn-md rounded font-sm hover-up">Edit</button>
                         </div>
@@ -21,15 +21,18 @@
                            
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Banner title</label>
-                                    <input type="text" placeholder="Type here" value="<%= banner.title %>" name="title" class="form-control" id="product_name">
+                                    <input type="text" placeholder="Type here" value="<%= banner.title %>" name="title" class="form-control" id="title">
+                                    <p id="titleError"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" value="<%= banner.description %>"  name="discription"  class="form-control" rows="4"></textarea>
+                                    <textarea placeholder="Type here" value="<%= banner.discription %>"  name="discription" id="description" class="form-control" rows="4"></textarea>
+                                    <p id="descriptionError"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Link</label>
-                                    <input type="text" placeholder="Type here" value="<%= banner.link %>" name="link" class="form-control" id="product_name">
+                                    <input type="text" placeholder="Type here" value="<%= banner.link %>" name="link" class="form-control" id="link">
+                                    <p id="linkError"></p>
                                 </div>
                                 
                                 <input type="hidden" name="id" value="<%= banner._id %>">
@@ -47,7 +50,8 @@
                         <div class="card-body">
                             <div class="input-upload">
                                 <img src="/admin/assets/imgs/theme/upload.svg" alt="">
-                                <input class="form-control" name="image" type="file"  accept="image/*">
+                                <input class="form-control" name="image" type="file"<%=banner.image  %> value=""  accept="image/*">
+                                <p id="imageError"></p>
                             </div>
                         </div>
                     </div> <!-- card end// -->
@@ -55,6 +59,89 @@
                 </div>
             </div>
         </section> <!-- content-main end// -->
-    
+   
+           <style>
+            .error-message {
+                color: red; 
+                font-size: 14px;
+                
+            }
+        </style>
+       <script>
+                    
+    function validateForm() {
+        var title = document.getElementById('title').value;
+        var description = document.getElementById('description').value;
+        var link = document.getElementById('link').value;
+        var image = document.querySelector('input[name="image"]').value;
+
+
+        const titleError=document.getElementById('titleError')
+        const descriptionError=document.getElementById('descriptionError')
+        const linkError=document.getElementById('linkError')
+        var imageError = document.getElementById('imageError');
+
+
+        // Check if title is empty
+        if (title.trim() === '') {
+            titleError.innerHTML = 'Title is required.';
+            titleError.style.color = 'red';
+
+            // Remove error message after 5 seconds
+            setTimeout(function () {
+                titleError.innerHTML = '';
+            }, 4000);
+
+            return false;
+        }
+
+        // Check if description is empty
+        if (description.trim() === '') {
+            descriptionError.innerHTML = 'Full description is required.';
+            descriptionError.style.color = 'red';
+
+            // Remove error message after 5 seconds
+            setTimeout(function () {
+                descriptionError.innerHTML = '';
+            }, 4000);
+
+            return false;
+        }
+
+        // Check if link is empty
+        if (link.trim() === '') {
+            linkError.innerHTML = 'Product title is required.';
+            linkError.style.color = 'red';
+
+            // Remove error message after 5 seconds
+            setTimeout(function () {
+                linkError.innerHTML = '';
+            }, 4000);
+
+            return false;
+        }
+
+
+        // // Check if an image is selected
+        // if (image.files.length === 0) {
+        //     // Display error message
+        //     imageError.innerHTML = 'Please select an image.';
+        //     imageError.style.color = 'red';
+
+        //     // Remove error message after 5 seconds
+        //     setTimeout(function () {
+        //         imageError.innerHTML = '';
+        //     }, 5000);
+
+        //     return false;
+        // }
+
+        // Additional custom validations can be added based on your requirements
+
+        // If all validations pass, return true to allow form submission
+        return true;
+    }
+
+    </script>
 
         <%- include('footer') %>

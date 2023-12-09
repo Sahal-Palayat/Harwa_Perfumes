@@ -16,7 +16,7 @@ const loadBanner =async (req,res)=>{
 
         res.render('admin/banner',{banner:currentproduct,totalpages,currentpage,})
     } catch (error) {
-        
+        res.status(500).render('users/page-500', { error });
     }
 
 }
@@ -28,7 +28,7 @@ const addNewBanner=async(req,res)=>{
         res.render('admin/addBanner')
     } catch (error) {
         console.log('Error from the banner ctrl in the funtion addNewBanner',error);
-        
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -63,7 +63,7 @@ const createBanner=async(req,res)=>{
 
     } catch (error) {
         console.log('Error from the banner ctrl in the funtion createBanner',error);
-        
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -79,7 +79,7 @@ const editBanner=async(req,res)=>{
         
     } catch (error) {
         console.log('Error from the banner ctrl in the funtion editBanner',error);
-        
+        res.status(500).render('users/page-500', { error });
     }
 }
 
@@ -142,7 +142,7 @@ const updateBanner=async(req,res)=>{
 
             } catch (error) {
                 console.log('Error from the banner ctrl in the funtion updateBanner',error);
-                
+                res.status(500).render('users/page-500', { error });
             }
       }
 

@@ -12,6 +12,8 @@ const userController=require('../controllers/userControllers')
 const cartController=require('../controllers/cartController')
 const orderController=require('../controllers/orderControllers')
 const couponController=require('../controllers/couponController')
+const wishlistController=require('../controllers/wishlistController')
+
 
 const config=require('../config/config')
 userRouter.use(nocache());
@@ -25,6 +27,7 @@ userRouter.use(session({
 userRouter.get('/',auth.isLogout,userController.loadMain)
 userRouter.get('/register',auth.isLogout,userController.loadRegister);
 userRouter.post('/register',auth.isLogout,userController.insertUser);
+userRouter.post("/resendOtp", userController.resendOtp);
    
 userRouter.post('/verify-otp',userController.verifyOTP)
 userRouter.get('/login',auth.isLogout,userController.loadLogin);
@@ -49,7 +52,7 @@ userRouter.post('/deleteItem',auth.isLogin,cartController.deleteItemCart)
 userRouter.get('/dltAllItem',auth.isLogin,cartController.dltAllItem)
 userRouter.get("/updateQuantity/:id",auth.isLogin,cartController.cartQuantityInc);
 userRouter.get("/updateQuantityDec/:id",auth.isLogin,cartController.cartQuantityDec);
-
+ 
 userRouter.get('/checkout',auth.isLogin,userController.loadCheckout)
 userRouter.post('/selectProduct',auth.isLogin,cartController.selectProduct)
 
@@ -57,7 +60,7 @@ userRouter.post('/placeOrder',auth.isLogin,orderController.placeOrder)
 userRouter.get('/orderView',auth.isLogin,orderController.loadOrderView)
 userRouter.get('/return',auth.isLogin,orderController.returnOrder)
 
-
+  
 userRouter.get('/invoice',auth.isLogin,orderController.invoice)
 userRouter.get('/invoiceDownload',auth.isLogin,orderController.invoiceDownload)
 
@@ -83,6 +86,10 @@ userRouter.get('/fullOrder',auth.isLogin,userController.loadFullOrder)
 
 userRouter.get('/searchProduct',auth.isLogin,userController.searchProduct)
 
-
+//---wishlist-------------------
+userRouter.get('/Wishlist',auth.isLogin,wishlistController.Wishlist)
+userRouter.get('/addToList',auth.isLogin,wishlistController.addToList)
+userRouter.get('/deleteWishlistItem',auth.isLogin,wishlistController.deleteWishlistItem)
+//------------------------------------
 
 module.exports=userRouter;   

@@ -99,7 +99,15 @@
        }, 5000)
        return false;
     }
-   
+    var pincodeValue = parseInt(pincode.value, 10);
+    if (isNaN(pincodeValue)) {
+        pincodeError.innerHTML = 'Pincode must be a number';
+        pincodeError.style.color = 'red';
+        setTimeout(() => {
+            pincodeError.innerHTML = '';
+        }, 5000);
+        return false;
+    }
     
     if (areastreet.value.trim() === '') {
         areastreetError.innerHTML = 'Field is required'
