@@ -16,6 +16,10 @@ function selectPaymentMethod(paymentmethod) {
 }
 
 function confirmorder() {
+  if (!addressId) {
+    alert('Please add an address before placing the order.');
+    return false; // Prevent form submission
+}
   try {
     Swal.fire({ 
       title: 'Confirm your order?',
