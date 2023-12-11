@@ -77,7 +77,7 @@ const Wishlist=async(req,res)=>{
         const products = await Product.find({ _id: { $in: productIds } });
        
         if (products) {
-            res.render('users/wishList', { products: products ,user});
+            res.render('users/wishlist', { products: products ,user});
         }
  
     } catch (error) {

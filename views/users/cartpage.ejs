@@ -188,7 +188,11 @@
                                 </thead>
                                 <tbody>
 
-                                
+                                    <% if(cart.length==0){%>
+                                        <p>cart is empty</p>
+                                  <%  }else{
+
+                                   
                                     <% cart.items.forEach(products => {    %>
                                         <%   if(products.quantity>0){%>
                                         <tr>
@@ -238,7 +242,7 @@
 
                                             <button class="btn btn-sm" onclick="itemDelete('<%= products.id %>')"><i class="fi-rs-trash"></i></button>
                                         </td>
-                                            <!-- <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td> -->
+                                             <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td> 
                                         </tr>
                                         <% }else{ %>
                                             <p>cart not found</p>
@@ -253,6 +257,7 @@
                                             <a href="/dltAllItem" class="text-muted"> <i class="fi-rs-cross-small"></i> Clear Cart</a>
                                         </td>
                                     </tr>
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>
@@ -316,22 +321,7 @@
         </section>
     </main>
    
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="text-center">
-                    <h5 class="mb-5">Now Loading</h5>
-                    <div class="loader">
-                        <div class="bar bar1"></div>
-                        <div class="bar bar2"></div>
-                        <div class="bar bar3"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Vendor JS-->
+    
     <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="user/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
