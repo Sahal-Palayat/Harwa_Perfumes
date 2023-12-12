@@ -24,7 +24,7 @@ userRouter.use(session({
  }))
   
 
-userRouter.get('/',auth.isLogout,userController.loadHome)
+userRouter.get('/',auth.isLogout,userController.loadMain)
 userRouter.get('/register',auth.isLogout,userController.loadRegister);
 userRouter.post('/register',auth.isLogout,userController.insertUser);
 userRouter.post("/resendOtp", userController.resendOtp);
@@ -60,7 +60,7 @@ userRouter.post('/placeOrder',auth.isLogin,orderController.placeOrder)
 userRouter.get('/orderView',auth.isLogin,orderController.loadOrderView)
 userRouter.get('/return',auth.isLogin,orderController.returnOrder)
 
-  
+ 
 userRouter.get('/invoice',auth.isLogin,orderController.invoice)
 userRouter.get('/invoiceDownload',auth.isLogin,orderController.invoiceDownload)
 
