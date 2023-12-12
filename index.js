@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://Sahal:Sa%40115894@cluster0.x1gvuc8.mongodb.net/Harwa_perfumes');
+
 const path = require('path')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
