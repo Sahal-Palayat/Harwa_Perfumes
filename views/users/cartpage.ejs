@@ -296,7 +296,7 @@
                                                    
                                                        
                                                     </td>
-                                                </tr>
+                                                </tr> 
                                                 <tr>
                                                     <td class="cart_total_label">Shipping</td>
                                                     <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
@@ -321,7 +321,14 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <a href="/checkout" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                    <a href="/checkout" class="btn <%= cart.items.some(product => product.selected) ? '' : 'disabled' %>">
+                                        <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut
+                                    </a>
+                                    
+                                    <% if (!cart.items.some(product => product.selected)) { %>
+                                        <p style="color: red;">Please select at least one product before proceeding to checkout.</p>
+                                    <% } %>
+                                    
                                 </div>
                             </div>
                             <%  }  %>
@@ -466,6 +473,12 @@ function selectStatus(id){
             }
         })
     }
+
+  
+
+
+
+
 </script> 
 
     <%- include('footer') %>
