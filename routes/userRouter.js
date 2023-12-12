@@ -24,7 +24,7 @@ userRouter.use(session({
  }))
   
 
-userRouter.get('/',auth.isLogout,userController.loadMain)
+userRouter.get('/',auth.isLogout,userController.loadHome)
 userRouter.get('/register',auth.isLogout,userController.loadRegister);
 userRouter.post('/register',auth.isLogout,userController.insertUser);
 userRouter.post("/resendOtp", userController.resendOtp);
