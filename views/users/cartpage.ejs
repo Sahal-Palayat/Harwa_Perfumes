@@ -174,8 +174,11 @@
                 <div class="row">
                     <div class="col-12">
 
-                    <% if(cart.items.length===null){ %>
-                        <p>cart is empty</p>
+                    <% if(cart.items.length===0){ %>
+                        <div class="container d-flex justify-content-center align-items-center"
+                        style="height: 300px; width: 100%;">
+                        <div style="text-align: center;"><p class="mb-2"> CART IS EMPTY</p> <br><a class="btn btn-sucess" href="/">Continue Shopping</a></div>
+                        </div>
                     <% } else{%>
 
                   
@@ -250,7 +253,6 @@
 
                                             <button class="btn btn-sm" onclick="itemDelete('<%= products.id %>')"><i class="fi-rs-trash"></i></button>
                                         </td>
-                                             <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td> 
                                         </tr>
                                         <% }else{ %>
                                             <p>cart not found</p>
