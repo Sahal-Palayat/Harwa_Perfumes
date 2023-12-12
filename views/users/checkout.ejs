@@ -238,15 +238,15 @@
                         
 
 
-                        <a style="margin-left: 25rem;" href="/addAddress" class="btn btn-primary btn-sm rounded">Create new</a>
+                        <a href="/addAddress" class="btn btn-primary btn-sm rounded">Create new</a>
 
-
+                        <br><br>
               <!-- <form> -->
                       <%  if(user.address.length>0){   %>
                           <%  for(let i=0;i<user.address.length;i++){  %>
                     
 
-                            <div class="container" style="width: 100rem;">
+                            <div class="container" style="width: 70rem;">
                                 <div class="row align-items-center">
                                    
                                 </div>
@@ -254,7 +254,7 @@
                                     <div class="col-xl-3 col-sm-6">
                                         <input class="form-check-input" type="radio" required="" onclick="selectAddress('<%= user.address[i]._id %>')" style="width: 1rem; height: 1rem;" value="<%= user.address[i]._id  %>" name="addressId" id="checkoutShippingMethod" checked="">
                                         
-                                        <div class="card">
+                                        <div class="card" style="width: 18rem;">
                                             <div class="card-body">
                                                 <div class="dropdown float-end">
                                                     <a class="text-muted dropdown-toggle font-size-16" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true"><i class="bx bx-dots-horizontal-rounded"></i></a>
@@ -276,7 +276,7 @@
 
                                                 </div>
                                                 <div class="d-flex gap-2 pt-4">
-                                                    <button type="button" class="btn btn-soft-primary btn-sm w-50"><i class="bx bx-user me-1"></i> Profile</button>
+                                                    <a href="/userprofile"><button type="button" class="btn btn-soft-primary btn-sm "><i class="bx bx-user me-1"></i> Profile</button></a>
                                                     <button type="button" class="btn btn-primary btn-sm w-50"><i class="bx bx-message-square-dots me-1"></i> Edit</button>
                                                 </div>
                                             </div>
@@ -354,9 +354,8 @@
 
 
                    
-                                <a style="margin-left: 25rem;" onclick="addWallet()" class="btn btn-primary btn-sm rounded">Add Wallet</a>
-
-
+                                <!-- <a  onclick="addWallet()" class="btn btn-primary btn-sm rounded">Add Wallet</a> -->
+                                
 
                                 <% if (coupon.length > 0) { %>
                                     <div class="col-lg-3">
@@ -581,7 +580,7 @@
     <script src="user/assets/js/plugins/jquery.countdown.min.js"></script>
     <script src="user/assets/js/plugins/images-loaded.js"></script>
     <script src="user/assets/js/plugins/isotope.js"></script>
-    <script src="user/assets/js/plugins/scrollup.js"></script>
+    <!-- <script src="user/assets/js/plugins/scrollup.js"></script> -->
     <script src="user/assets/js/plugins/jquery.vticker-min.js"></script>
     <!-- Template  JS -->
     <script src="./user/assets/js/main.js?v=3.4"></script>
