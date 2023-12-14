@@ -174,8 +174,12 @@ const dltAllItem = async (req, res) => {
           console.log(cart.items);
             if(cart.items[index].selected===false){
                 cart.items[index].selected=true
+                res.json({ status: true, message: 'Product selection updated successfully' });
+
             }else{
                 cart.items[index].selected=false
+                res.json({ status: true, message: 'Product selection updated successfully' });
+
             }
             await cart.save()
         }
